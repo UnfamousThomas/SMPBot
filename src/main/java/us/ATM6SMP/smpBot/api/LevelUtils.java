@@ -4,11 +4,11 @@ import java.util.concurrent.TimeUnit;
 
 public class LevelUtils {
 
-    public void experienceFormula(int level) {
-        double exp = level * level * 100;
+    public static double experienceFormula(int level) {
+        return level * level * 100;
     }
 
-    public double getExperienceFromVC(long timeJoined) {
+    public static double getExperienceFromVC(long timeJoined) {
         long timespent = System.currentTimeMillis() - timeJoined;
 
         double minutes = TimeUnit.MILLISECONDS.toMinutes(timespent);
@@ -18,7 +18,7 @@ public class LevelUtils {
         return minutes * 10;
     }
 
-    public long getExperienceFromMessages(int amountOfMessages) {
+    public static long getExperienceFromMessages(int amountOfMessages) {
 
         //For every message user receives around 0.01 experience, that means that 100 messages = 1 exp
 

@@ -16,7 +16,8 @@ public class TestCommand extends Command {
         usage = "test";
         description = "A command to check bot response.";
         addSubcommands(
-                new TestSubCommand()
+                new TestSubCommand(),
+                new TestLevelExperience()
         );
     }
 

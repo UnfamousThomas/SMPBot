@@ -1,4 +1,4 @@
-package us.ATM6SMP.smpBot.teams;
+package us.ATM6SMP.smpBot.api.objects.teams;
 
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.*;

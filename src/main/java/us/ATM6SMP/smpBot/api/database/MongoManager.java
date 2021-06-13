@@ -7,8 +7,10 @@ import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.Morphia;
 import us.ATM6SMP.smpBot.api.database.daos.InviteDAO;
 import us.ATM6SMP.smpBot.api.database.daos.TeamDAO;
-import us.ATM6SMP.smpBot.teams.InviteObject;
-import us.ATM6SMP.smpBot.teams.TeamObject;
+import us.ATM6SMP.smpBot.api.database.daos.UserDAO;
+import us.ATM6SMP.smpBot.api.objects.teams.InviteObject;
+import us.ATM6SMP.smpBot.api.objects.teams.TeamObject;
+import us.ATM6SMP.smpBot.api.objects.user.User;
 
 
 import java.util.ArrayList;
@@ -22,6 +24,7 @@ public class MongoManager {
     private Datastore serverData;
     private TeamDAO teamDAO;
     private InviteDAO inviteDAO;
+    private UserDAO userDAO;
 
 
     public void init(String host, int port) {
@@ -47,6 +50,7 @@ public class MongoManager {
     private void registerDaos() {
         teamDAO = new TeamDAO(TeamObject.class, serverData);
         inviteDAO = new InviteDAO(InviteObject.class, serverData);
+        userDAO = new UserDAO(User.class, serverData);
     }
 
 
@@ -71,5 +75,10 @@ public class MongoManager {
     public InviteDAO getInviteDAO() {
         return inviteDAO;
     }
+
+    public UserDAO getUserDAO() {
+        return userDAO;
+    }
+
 }
 

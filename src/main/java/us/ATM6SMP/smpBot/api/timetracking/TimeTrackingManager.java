@@ -2,9 +2,7 @@ package us.ATM6SMP.smpBot.api.timetracking;
 
 import net.dv8tion.jda.api.entities.Member;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class TimeTrackingManager {
@@ -28,5 +26,9 @@ public class TimeTrackingManager {
             instance = new TimeTrackingManager();
         }
         return instance;
+    }
+
+    public void removeTimeTracking(long id) {
+        timeTargets.remove(id);
     }
 }

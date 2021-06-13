@@ -1,4 +1,4 @@
-package us.ATM6SMP.smpBot.teams;
+package us.ATM6SMP.smpBot.api.objects.teams;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
@@ -8,7 +8,6 @@ import us.ATM6SMP.smpBot.api.database.MongoManager;
 
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
