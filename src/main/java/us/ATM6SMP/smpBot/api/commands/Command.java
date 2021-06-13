@@ -1,15 +1,14 @@
-package us.ATM6SMP.smpBot.api;
+package us.ATM6SMP.smpBot.api.commands;
 
 import com.google.common.collect.Maps;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import us.ATM6SMP.smpBot.api.DataHandler;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 public abstract class Command {
     final String name;

@@ -1,9 +1,10 @@
-package us.ATM6SMP.smpBot.api;
+package us.ATM6SMP.smpBot.api.commands;
 
 import com.google.common.collect.Maps;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import us.ATM6SMP.smpBot.api.Logger;
 
 import java.util.*;
 

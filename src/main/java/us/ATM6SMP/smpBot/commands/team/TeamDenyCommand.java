@@ -2,8 +2,8 @@ package us.ATM6SMP.smpBot.commands.team;
 
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import us.ATM6SMP.smpBot.api.Command;
-import us.ATM6SMP.smpBot.api.CustomPermission;
+import us.ATM6SMP.smpBot.api.commands.Command;
+import us.ATM6SMP.smpBot.api.commands.CustomPermission;
 import us.ATM6SMP.smpBot.teams.InviteObject;
 import us.ATM6SMP.smpBot.teams.TeamManager;
 import us.ATM6SMP.smpBot.teams.TeamObject;

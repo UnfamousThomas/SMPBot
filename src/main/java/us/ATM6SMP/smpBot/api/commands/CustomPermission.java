@@ -1,4 +1,4 @@
-package us.ATM6SMP.smpBot.api;
+package us.ATM6SMP.smpBot.api.commands;
 
 public enum CustomPermission {
     ADMIN("ADMINISTRATOR"),
