@@ -29,7 +29,6 @@ public class TeamCreateCommand extends Command {
 
         manager.getTeams().forEach(teamObject -> {
             teamObject.getListOfMemberIds().forEach(member -> {
-                System.out.println("team:" + teamObject.getName());
                 if (member == m.getIdLong()) {
                     isInTeam[0] = true;
                 }

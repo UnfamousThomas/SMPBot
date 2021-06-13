@@ -136,21 +136,10 @@ public class TeamManager {
                     .setFooter("ATM6 SMP")
                     .addField("Team name", team.getName(), true);
 
-            StringBuilder builder = new StringBuilder();
-
-            team.getListOfMemberIds().forEach(memberid -> {
-                guild.retrieveMemberById(memberid).queue(realMember -> {
-                    builder.append(realMember.getUser().getName());
-                    builder.append("\n");
-                });
-            });
-
             embedBuilder
-                    .addField("Members", builder.toString(), false)
-                    .addField("Role", guild.getRoleById(team.getRoleID()).getName(), false)
                     .addBlankField(false)
-                    .addField("To join: ", ".team join " + team.getLeaderId(), false);
-
+                    .addField("To join: ", "!team join " + team.getLeaderId(), false)
+                    .addField("To deny:", "!team deny " + team.getLeaderId(), false);
             MessageEmbed embed = embedBuilder.build();
 
             privateChannel.sendMessage(embed).queue();
@@ -169,6 +158,15 @@ public class TeamManager {
         joinedTeam.addMember(joining.getUser().getIdLong());
         teams.add(joinedTeam);
         mongoManager.getTeamDAO().save(joinedTeam);
+    }
+
+    public void denyInvite(Member invited, TeamObject team, InviteObject invite) {
+        invited.getGuild().getTextChannelById(team.getTeamChatChannelId()).sendMessage(invited.getEffectiveName() + " has denied the invite to the team!").queue();
+
+        invites.remove(invite);
+        invite.setActive(false);
+        invites.add(invite);
+        mongoManager.getInviteDAO().save(invite);
     }
 
     public ArrayList<TeamObject> getTeams() {

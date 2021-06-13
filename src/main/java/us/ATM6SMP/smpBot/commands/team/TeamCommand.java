@@ -27,7 +27,8 @@ public class TeamCommand extends Command {
                 new TeamCreateCommand(),
                 new TeamDeleteCommand(),
                 new TeamInviteCommand(),
-                new TeamJoinCommand()
+                new TeamJoinCommand(),
+                new TeamDenyCommand()
         );
 
     }
@@ -45,6 +46,7 @@ public class TeamCommand extends Command {
         } else {
             sendEmbed(teamMemberOf[0], event.getGuild(), event.getTextChannel());
         }
+
     }
 
     private void sendEmbed(TeamObject team, Guild guild, TextChannel channel) {

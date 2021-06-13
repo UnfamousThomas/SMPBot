@@ -24,7 +24,6 @@ public class TeamJoinCommand extends Command {
     @Override
     public void run(Member m, List<String> args, MessageReceivedEvent event) {
         try {
-            System.out.println(Long.parseLong(args.get(0)));
             accept(m, event, Long.parseLong(args.get(0)));
         } catch (NumberFormatException ignored) {
             event.getTextChannel().sendMessage("Invalid id.").queue();
@@ -42,6 +41,7 @@ public class TeamJoinCommand extends Command {
 
         if(inviteObject[0] == null) {
             e.getTextChannel().sendMessage("Error finding invite.").queue();
+            return;
         }
 
         final TeamObject[] object = {null};

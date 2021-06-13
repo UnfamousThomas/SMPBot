@@ -16,7 +16,7 @@ public class TeamInviteCommand extends Command {
         super("invite");
         aliases = alias("add", "i");
         permission = CustomPermission.MEMBER;
-        usage = ".team invite [TAGGED USER]";
+        usage = "!team invite [TAGGED USER]";
         minArgs = 1;
         maxArgs = 1;
         description = "Used to send an invite";

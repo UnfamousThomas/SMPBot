@@ -45,7 +45,10 @@ public class HelpCommand extends Command {
             event.getTextChannel().sendMessage(embed.build()).queue();
         } else if(args.size() == 1) {
             Command command = CommandManager.getInstance().getCommands().get(args.get(0).toLowerCase());
-
+            if(command == null) {
+                event.getChannel().sendMessage("Command was not found! Check your spelling.").queue();
+                return;
+            }
             EmbedBuilder builder = new EmbedBuilder();
             builder.setTitle(args.get(0).toUpperCase() + " - Details");
 
@@ -59,9 +62,6 @@ public class HelpCommand extends Command {
                 stringBuilder.append("**");
                 stringBuilder.append(s.toUpperCase());
                 stringBuilder.append("**:");
-                stringBuilder.append("\n");
-                stringBuilder.append("Description: ");
-                stringBuilder.append(sub.description);
                 stringBuilder.append("\n");
                 stringBuilder.append("Usage: ");
                 stringBuilder.append(sub.usage);
