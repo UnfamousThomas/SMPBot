@@ -124,6 +124,8 @@ public class TeamManager {
         mongoManager.getTeamDAO().save(team);
 
         sendMessage(member, team, member.getGuild());
+
+        member.getGuild().getTextChannelById(team.getTeamChatChannelId()).sendMessage(member.getUser().getName() + " has been invited to the team by the team leader!").queue();
     }
 
     private void sendMessage(Member member, TeamObject team, Guild guild) {
@@ -157,6 +159,11 @@ public class TeamManager {
         joinedTeam.addMember(joining.getUser().getIdLong());
         teams.add(joinedTeam);
         mongoManager.getTeamDAO().save(joinedTeam);
+        joining.getGuild().addRoleToMember(joining.getUser().getIdLong(), joining.getGuild().getRoleById(joinedTeam.getRoleID())).queue();
+    }
+
+    public void leaveTeam(Member leaving) {
+
     }
 
     public void denyInvite(Member invited, TeamObject team, InviteObject invite) {

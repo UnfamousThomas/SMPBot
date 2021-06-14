@@ -23,6 +23,6 @@ public class TestLevelExperience extends Command {
     public void run(Member m, List<String> args, MessageReceivedEvent event) {
         User user = UserManager.getInstance().getUserByUser(m.getUser());
         event.getChannel().sendMessage("Level: " + user.getLevel()).queue();
-        event.getChannel().sendMessage("Experience: " + user.getExperience() + " / " + user.getRequiredExperienceForNextLevel() + " (" + user.getPercentage() + "%" + ")").queue();
+        event.getChannel().sendMessage(user.currentExperienceText()).queue();
     }
 }

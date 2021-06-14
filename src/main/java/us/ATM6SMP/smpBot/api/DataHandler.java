@@ -12,12 +12,11 @@ public class DataHandler {
     public static DataHandler getInstance() {
         if(instance == null) {
             instance = new DataHandler();
-            addDevs();
         }
         return instance;
     }
 
-    public static ArrayList<String> getDev() {
+    public ArrayList<String> getDev() {
         return devList;
     }
 
@@ -25,7 +24,7 @@ public class DataHandler {
         return helperList;
     }
 
-    private static void addDevs() {
+    public void addDevs() {
         devList.add("206383620531683328");
     }
 }

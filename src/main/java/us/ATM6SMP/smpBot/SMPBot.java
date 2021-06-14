@@ -6,11 +6,14 @@ import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
+import us.ATM6SMP.smpBot.api.DataHandler;
 import us.ATM6SMP.smpBot.api.commands.CommandManager;
 import us.ATM6SMP.smpBot.api.Logger;
 import us.ATM6SMP.smpBot.api.database.MongoManager;
 import us.ATM6SMP.smpBot.api.objects.user.UserManager;
+import us.ATM6SMP.smpBot.commands.AnnounceCommand;
 import us.ATM6SMP.smpBot.commands.HelpCommand;
+import us.ATM6SMP.smpBot.commands.InfoCommand;
 import us.ATM6SMP.smpBot.commands.dev.ShutdownCommand;
 import us.ATM6SMP.smpBot.commands.team.TeamCommand;
 import us.ATM6SMP.smpBot.commands.test.TestCommand;
@@ -42,7 +45,9 @@ public class SMPBot {
                     new TestCommand(),
                     new TeamCommand(),
                     new HelpCommand(),
-                    new ShutdownCommand()
+                    new ShutdownCommand(),
+                    new InfoCommand(),
+                    new AnnounceCommand()
             );
 
 
@@ -50,6 +55,9 @@ public class SMPBot {
             jda.addEventListener(new VoiceChannelListener());
             jda.addEventListener(new UserManager());
             jda.addEventListener(new TextChannelListener());
+
+            DataHandler.getInstance().addDevs();
+
             Logger.log(Logger.Level.SUCCESS, "Bot started.");
 
         } catch (Exception ex) {

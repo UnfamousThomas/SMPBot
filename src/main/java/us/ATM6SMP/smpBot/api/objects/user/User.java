@@ -1,5 +1,6 @@
 package us.ATM6SMP.smpBot.api.objects.user;
 
+import org.apache.commons.math3.util.Precision;
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
@@ -7,6 +8,8 @@ import org.mongodb.morphia.annotations.IndexOptions;
 import org.mongodb.morphia.annotations.Indexed;
 import us.ATM6SMP.smpBot.SMPBot;
 import us.ATM6SMP.smpBot.api.LevelUtils;
+
+import java.text.DecimalFormat;
 
 @Entity(value="users", noClassnameStored = true)
 public class User {
@@ -20,6 +23,7 @@ public class User {
     @Indexed(options = @IndexOptions(unique = true))
     private long discordId;
 
+    private double totalExperience;
     private double experience;
     private int level = 0;
 
@@ -32,12 +36,21 @@ public class User {
     }
 
     private void levelUp() {
+        experience = experience - getRequiredExperienceForNextLevel();
         level = level + 1;
         SMPBot.getJDA().retrieveUserById(this.discordId).queue(user -> {
             user.openPrivateChannel().queue(privateChannel -> {
-                privateChannel.sendMessage("You have levelled up to: " + level + ". You are " + getPercentage() + "% to level " + (level + 1) + "!").queue();
+                privateChannel.sendMessage("You have levelled up to: " + level + ". " + percentageText()).queue();
             });
         });
+    }
+
+    public String percentageText() {
+        return "You are " + roundedDouble(this.getPercentage()) + "% to level " + (this.level + 1) + "!";
+    }
+
+    public String currentExperienceText() {
+        return roundedDouble(this.experience) + " / " + roundedDouble(this.getRequiredExperienceForNextLevel()) + " (" + roundedDouble(this.getPercentage()) + "%)";
     }
 
     public double getPercentage() {
@@ -62,6 +75,7 @@ public class User {
 
     public void giveExperience(double expAdded) {
         this.experience = this.experience + expAdded;
+        this.totalExperience = this.totalExperience + totalExperience;
         checkForLevelup();
     }
 
@@ -77,4 +91,17 @@ public class User {
         return missing;
     }
 
+    public double getTotalExperience() {
+        return totalExperience;
+    }
+
+    public void recalculateTotalExperience() {
+        int level = this.level;
+
+        this.totalExperience = (100 * Math.pow(level, 2)) + this.experience;
+    }
+
+    private double roundedDouble(double input) {
+        return Precision.round(input, 2);
+    }
 }

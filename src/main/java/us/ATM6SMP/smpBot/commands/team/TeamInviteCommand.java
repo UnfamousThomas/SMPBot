@@ -74,6 +74,7 @@ public class TeamInviteCommand extends Command {
 
         if(found[0]) {
             manager.inviteToTeam(manager.getTeams().get(index[0]), memberToInvite);
+            textChannel.sendMessage("Invite sent!").queue();
         } else {
             textChannel.sendMessage("Could not find you as a leader in a team!").queue();
         }

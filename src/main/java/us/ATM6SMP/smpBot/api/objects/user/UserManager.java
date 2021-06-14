@@ -4,6 +4,7 @@ import com.google.api.client.util.ArrayMap;
 import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.events.ShutdownEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import org.jetbrains.annotations.NotNull;
 import us.ATM6SMP.smpBot.SMPBot;
 
 import java.util.List;
@@ -22,26 +23,41 @@ public class UserManager extends ListenerAdapter {
         return instance;
     }
     @Override
-    public void onReady(ReadyEvent event) {
+    public void onReady(@NotNull ReadyEvent event) {
+        System.out.println("Ready!");
         List<User> userList = SMPBot.getMongoManager().getUserDAO().find().asList();
         for (User user : userList) {
+            System.out.println("Saving: " + user.getDiscordId());
             users.add(user.getDiscordId(), user);
         }
 
+        users.forEach((aLong, user) -> {
+            System.out.println("Found: " + aLong);
+        });
+
         scheduleTimer();
+
     }
 
-    private void scheduleTimer() {
-        long delay = 300000L;
+    public void scheduleTimer() {
+        System.out.println("While scheduling: " + users.size());
         Timer timer = new Timer();
-        timer.schedule(new TimerTask() {
+        timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                users.forEach(((aLong, user) -> {
-                    SMPBot.getMongoManager().getUserDAO().save(user);
-                }));
+                updateData();
             }
-        }, delay);
+        }, 1000, 10000L);
+    }
+
+    private void updateData() {
+        System.out.println("Initializing save.");
+        System.out.println(users.size() + " users found in list.");
+        users.forEach(((aLong, user) -> {
+            System.out.println("Saving: " + user.getDiscordId());
+            SMPBot.getMongoManager().getUserDAO().save(user);
+            System.out.println("Save succesful!");
+        }));
     }
 
     @Override
@@ -70,7 +86,7 @@ public class UserManager extends ListenerAdapter {
         User user = new User();
         user.setDiscordId(id);
         saveNewUser(user);
-
+        System.out.println("Saving new user: " + user.getDiscordId());
         return user;
     }
 
