@@ -18,10 +18,10 @@ public class LevelUtils {
         return minutes * 10;
     }
 
-    public static long getExperienceFromMessages(int amountOfMessages) {
+    public static double getExperienceFromMessages(int amountOfMessages) {
 
         //For every message user receives around 0.01 experience, that means that 100 messages = 1 exp
 
-        return (long) (amountOfMessages * 0.01);
+        return (amountOfMessages * 0.01);
     }
 }

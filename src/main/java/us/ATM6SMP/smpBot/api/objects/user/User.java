@@ -8,7 +8,7 @@ import org.mongodb.morphia.annotations.Indexed;
 import us.ATM6SMP.smpBot.SMPBot;
 import us.ATM6SMP.smpBot.api.LevelUtils;
 
-@Entity(value="teams", noClassnameStored = true)
+@Entity(value="users", noClassnameStored = true)
 public class User {
 
     public User() {
