@@ -23,9 +23,9 @@ public class TestTotalEXPCommand extends Command {
         int i = 0;
 
         int sum = 0;
-        while(level <= i) {
+        while(i <= level) {
+            sum = sum + (100 * (i + 1) * (i + 1));
             i = i + 1;
-            sum = sum + (100 * level * level);
         }
 
         event.getChannel().sendMessage("EXP required: " + sum).queue();
