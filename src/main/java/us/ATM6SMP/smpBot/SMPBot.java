@@ -5,7 +5,6 @@ import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
-import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import us.ATM6SMP.smpBot.api.DataHandler;
 import us.ATM6SMP.smpBot.api.commands.CommandManager;
 import us.ATM6SMP.smpBot.api.Logger;
@@ -18,6 +17,7 @@ import us.ATM6SMP.smpBot.commands.dev.ShutdownCommand;
 import us.ATM6SMP.smpBot.commands.team.TeamCommand;
 import us.ATM6SMP.smpBot.commands.test.TestCommand;
 import us.ATM6SMP.smpBot.api.objects.teams.TeamManager;
+import us.ATM6SMP.smpBot.listeners.GuildLeaveJoinListener;
 import us.ATM6SMP.smpBot.listeners.TextChannelListener;
 import us.ATM6SMP.smpBot.listeners.VoiceChannelListener;
 
@@ -34,8 +34,9 @@ public class SMPBot {
             JDABuilder builder = JDABuilder
                     .createDefault("ODQzMjEzNDIyMzE3NjY2MzI1.YKAlsg.Nrdol1HLNTMfBaum35xqlW12hyk")
                     .setActivity(Activity.playing("on the SMP!"))
+                    .enableIntents(GatewayIntent.GUILD_MEMBERS)
                     .setBulkDeleteSplittingEnabled(false)
-                    .enableCache(CacheFlag.VOICE_STATE);
+                    .setMemberCachePolicy(MemberCachePolicy.ALL);
 
 
             TeamManager.getInstance().load();
@@ -55,6 +56,7 @@ public class SMPBot {
             jda.addEventListener(new VoiceChannelListener());
             jda.addEventListener(new UserManager());
             jda.addEventListener(new TextChannelListener());
+            jda.addEventListener(new GuildLeaveJoinListener());
 
             DataHandler.getInstance().addDevs();
 

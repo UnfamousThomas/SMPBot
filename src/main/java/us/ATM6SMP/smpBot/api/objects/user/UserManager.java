@@ -1,12 +1,15 @@
 package us.ATM6SMP.smpBot.api.objects.user;
 
 import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
 import us.ATM6SMP.smpBot.SMPBot;
+import us.ATM6SMP.smpBot.api.database.MongoManager;
+import us.ATM6SMP.smpBot.api.objects.Guild;
 import us.ATM6SMP.smpBot.api.tasks.SaveUsersTaskTimer;
+import us.ATM6SMP.smpBot.api.tasks.UpdateScoreboardTimer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,13 +33,17 @@ public class UserManager extends ListenerAdapter {
         for (User user : userList) {
             users.put(user.getDiscordId(), user);
         }
-        scheduleTask();
+        scheduleTasks();
     }
 
-    private void scheduleTask() {
-        Timer timer = new Timer();
-        SaveUsersTaskTimer taskTimer = new SaveUsersTaskTimer(timer);
-        timer.scheduleAtFixedRate(taskTimer, 100, 1000);
+    private void scheduleTasks() {
+        Timer userTask = new Timer();
+        SaveUsersTaskTimer taskTimer = new SaveUsersTaskTimer(userTask);
+        userTask.scheduleAtFixedRate(taskTimer, 100, 1000 * 60 * 20);
+
+        Timer scoreboardTask = new Timer();
+        UpdateScoreboardTimer scoreboardTimer = new UpdateScoreboardTimer(scoreboardTask);
+        scoreboardTask.scheduleAtFixedRate(scoreboardTimer, 100, 1000 * 5);
     }
 
    //todo: figure out a way to save guilds & users so that I can access all users when calculating the actual leaderboards.
@@ -51,7 +58,7 @@ public class UserManager extends ListenerAdapter {
         return user;
     }
 
-    private boolean checkIfUserExists(Long id) {
+    public boolean checkIfUserExists(Long id) {
         User user = users.get(id);
 
         if(user != null) {
@@ -61,11 +68,42 @@ public class UserManager extends ListenerAdapter {
         }
     }
 
-    public User getUserByUser(net.dv8tion.jda.api.entities.User user, String discordName) {
-        User botUser = getUserByID(user.getIdLong());
+    public User getUserByMember(Member member, String discordName) {
+        User botUser = getUserByID(member.getIdLong());
         botUser.checkName(discordName);
+        guildChecks(member, botUser);
 
         return botUser;
+    }
+
+    private void guildChecks(Member member, User user) {
+        Guild guild = SMPBot.getMongoManager().getGuildDAO().findOne("guildId", member.getGuild().getIdLong());
+        if(guild == null) {
+            guild = new Guild();
+            guild.setGuildId(member.getIdLong());
+        }
+
+        if(!(guild.containsUser(user))) {
+            guild.addUser(user);
+        }
+
+        SMPBot.getMongoManager().getGuildDAO().save(guild);
+    }
+
+    public void leftGuild(Member member, User user) {
+        Guild guild = SMPBot.getMongoManager().getGuildDAO().findOne("guildId", member.getGuild().getIdLong());
+
+        if(guild == null) {
+            guild = new Guild();
+            guild.setGuildId(member.getIdLong());
+            SMPBot.getMongoManager().getGuildDAO().save(guild);
+        }
+
+        if(guild.containsUser(user)) {
+            guild.removeUser(user);
+        }
+
+        SMPBot.getMongoManager().getGuildDAO().save(guild);
     }
 
     public User createNewUser(Long id) {
