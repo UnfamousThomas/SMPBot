@@ -28,6 +28,7 @@ public class ScoreboardManager {
     }
 
     public void updateScoreboard() {
+        System.out.println("Running now!");
         //triggers every 30 secs I suppose
         List<us.ATM6SMP.smpBot.api.objects.Guild> guilds = SMPBot.getMongoManager().getGuildDAO().find().asList();
         for (us.ATM6SMP.smpBot.api.objects.Guild guild : guilds) {
@@ -38,6 +39,7 @@ public class ScoreboardManager {
 
             stringBuilder.append("LEADERBOARD:\n");
             for (User user : users) {
+                //System.out.println(user.getDiscordId());
                 if(rank > 11) {
                     break;
                 }
@@ -45,6 +47,7 @@ public class ScoreboardManager {
                 stringBuilder.append(rank);
                 stringBuilder.append("**");
                 stringBuilder.append(user.getName());
+                rank = rank + 1;
             }
             String built = stringBuilder.toString();
             scoreboardMap.put(guild.getGuildId(), built);

@@ -4,6 +4,7 @@ import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.*;
 import us.ATM6SMP.smpBot.api.objects.user.User;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity(value="guilds", noClassnameStored = true)
@@ -16,7 +17,7 @@ public class Guild {
     Long guildId;
 
     @Reference(idOnly = true)
-    List<User> usersInGuild;
+    List<User> usersInGuild = new ArrayList<>();
 
     public void setGuildId(Long guildId) {
         this.guildId = guildId;

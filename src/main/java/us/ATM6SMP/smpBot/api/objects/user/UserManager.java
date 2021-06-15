@@ -46,7 +46,6 @@ public class UserManager extends ListenerAdapter {
         scoreboardTask.scheduleAtFixedRate(scoreboardTimer, 100, 1000 * 5);
     }
 
-   //todo: figure out a way to save guilds & users so that I can access all users when calculating the actual leaderboards.
 
     private User getUserByID(Long id) {
         User user;
@@ -79,8 +78,9 @@ public class UserManager extends ListenerAdapter {
     private void guildChecks(Member member, User user) {
         Guild guild = SMPBot.getMongoManager().getGuildDAO().findOne("guildId", member.getGuild().getIdLong());
         if(guild == null) {
+            System.out.println("Guild: " + member.getGuild().getName() + ": " + member.getGuild().getIdLong());
             guild = new Guild();
-            guild.setGuildId(member.getIdLong());
+            guild.setGuildId(member.getGuild().getIdLong());
         }
 
         if(!(guild.containsUser(user))) {
