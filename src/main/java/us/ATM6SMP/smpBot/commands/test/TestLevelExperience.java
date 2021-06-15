@@ -21,7 +21,7 @@ public class TestLevelExperience extends Command {
 
     @Override
     public void run(Member m, List<String> args, MessageReceivedEvent event) {
-        User user = UserManager.getInstance().getUserByUser(m.getUser(), m.getUser().getName());
+        User user = UserManager.getInstance().getUserByMember(m, m.getUser().getName());
         event.getChannel().sendMessage("Level: " + user.getLevel()).queue();
         event.getChannel().sendMessage(user.currentExperienceText()).queue();
     }

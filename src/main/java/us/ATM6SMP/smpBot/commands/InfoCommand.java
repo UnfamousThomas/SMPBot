@@ -25,20 +25,27 @@ public class InfoCommand extends Command {
     @Override
     public void run(Member m, List<String> args, MessageReceivedEvent event) {
         if(args.size() == 0) {
-            event.getChannel().sendMessage(generateEmbed(m.getUser())).queue();
+            event.getChannel().sendMessage(generateEmbed(m)).queue();
         } else {
             if(event.getMessage().getMentionedMembers().size() == 1) {
                 Member mentioned = event.getMessage().getMentionedMembers().get(0);
-                event.getChannel().sendMessage(generateEmbed(mentioned.getUser())).queue();
+                event.getGuild().retrieveMemberById(mentioned.getUser().getIdLong()).queue(member -> {
+                   if(member != null) {
+                       event.getChannel().sendMessage(generateEmbed(member)).queue();
+                   } else {
+                       event.getChannel().sendMessage("Error finding user.").queue();
+                   }
+                });
             } else {
                 event.getChannel().sendMessage("Error finding user.").queue();
             }
         }
     }
 
-    private MessageEmbed generateEmbed(User user) {
+    private MessageEmbed generateEmbed(Member member) {
         EmbedBuilder builder = new EmbedBuilder();
-        us.ATM6SMP.smpBot.api.objects.user.User userObject = UserManager.getInstance().getUserByUser(user, user.getName());
+        User user = member.getUser();
+        us.ATM6SMP.smpBot.api.objects.user.User userObject = UserManager.getInstance().getUserByMember(member, user.getName());
         builder.setTitle(user.getName() + " - PROFILE");
         builder.setColor(Color.WHITE);
         builder.setFooter("ATM6SMP BOT");

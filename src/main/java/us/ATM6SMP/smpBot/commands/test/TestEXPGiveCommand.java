@@ -20,9 +20,9 @@ public class TestEXPGiveCommand extends Command {
 
     @Override
     public void run(Member m, List<String> args, MessageReceivedEvent event) {
-        Long id = Long.parseLong(args.get(0));
+        long id = Long.parseLong(args.get(0));
         event.getGuild().retrieveMemberById(id).queue(member -> {
-            UserManager.getInstance().getUserByUser(member.getUser(), member.getUser().getName()).giveExperience(Double.parseDouble(args.get(1)));
+            UserManager.getInstance().getUserByMember(member, member.getUser().getName()).giveExperience(Double.parseDouble(args.get(1)));
             event.getChannel().sendMessage("Success!").queue();
         });
     }
