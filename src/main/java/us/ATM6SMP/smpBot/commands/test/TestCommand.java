@@ -2,7 +2,6 @@ package us.ATM6SMP.smpBot.commands.test;
 
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import us.ATM6SMP.smpBot.api.ScoreboardManager;
 import us.ATM6SMP.smpBot.api.commands.Category;
 import us.ATM6SMP.smpBot.api.commands.Command;
 import us.ATM6SMP.smpBot.api.commands.CustomPermission;
@@ -28,6 +27,5 @@ public class TestCommand extends Command {
     @Override
     public void run(Member m, List<String> args, MessageReceivedEvent event) {
         event.getChannel().sendMessage("Main test command").queue();
-        event.getChannel().sendMessage(ScoreboardManager.getInstance().requestScoreboard(m.getGuild())).queue();
     }
 }
