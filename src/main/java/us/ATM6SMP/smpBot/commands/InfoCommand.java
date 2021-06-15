@@ -38,7 +38,7 @@ public class InfoCommand extends Command {
 
     private MessageEmbed generateEmbed(User user) {
         EmbedBuilder builder = new EmbedBuilder();
-        us.ATM6SMP.smpBot.api.objects.user.User userObject = UserManager.getInstance().getUserByID(user.getIdLong());
+        us.ATM6SMP.smpBot.api.objects.user.User userObject = UserManager.getInstance().getUserByUser(user, user.getName());
         builder.setTitle(user.getName() + " - PROFILE");
         builder.setColor(Color.WHITE);
         builder.setFooter("ATM6SMP BOT");

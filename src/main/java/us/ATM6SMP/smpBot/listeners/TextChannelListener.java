@@ -12,6 +12,6 @@ public class TextChannelListener extends ListenerAdapter {
         if(event.getAuthor().isBot()) {
             return;
         }
-        UserManager.getInstance().getUserByID(event.getAuthor().getIdLong()).giveExperience(LevelUtils.getExperienceFromMessages(1));
+        UserManager.getInstance().getUserByUser(event.getAuthor(), event.getAuthor().getName()).giveExperience(LevelUtils.getExperienceFromMessages(1));
     }
 }

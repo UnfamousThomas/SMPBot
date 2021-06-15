@@ -36,7 +36,7 @@ public class UserManager extends ListenerAdapter {
         timer.scheduleAtFixedRate(taskTimer, 100, 1000);
     }
 
-    public User getUserByID(Long id) {
+    private User getUserByID(Long id) {
         User user;
         if(!checkIfUserExists(id)) {
             user = createNewUser(id);
@@ -56,8 +56,11 @@ public class UserManager extends ListenerAdapter {
         }
     }
 
-    public User getUserByUser(net.dv8tion.jda.api.entities.User user) {
-        return getUserByID(user.getIdLong());
+    public User getUserByUser(net.dv8tion.jda.api.entities.User user, String discordName) {
+        User botUser = getUserByID(user.getIdLong());
+        botUser.checkName(discordName);
+
+        return botUser;
     }
 
     public User createNewUser(Long id) {

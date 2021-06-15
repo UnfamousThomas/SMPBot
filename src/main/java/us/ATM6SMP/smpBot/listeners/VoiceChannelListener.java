@@ -23,7 +23,7 @@ public class VoiceChannelListener extends ListenerAdapter {
 
         if (TimeTrackingManager.getInstance().getTimeTracking(event.getMember()) != null) {
             double expAdded = LevelUtils.getExperienceFromVC(TimeTrackingManager.getInstance().getTimeTracking(event.getMember()).getTimeJoinedVC());
-            UserManager.getInstance().getUserByID(event.getMember().getUser().getIdLong()).giveExperience(expAdded);
+            UserManager.getInstance().getUserByUser(event.getMember().getUser(), event.getMember().getUser().getName()).giveExperience(expAdded);
 
             TimeTrackingManager.getInstance().removeTimeTracking(event.getMember().getIdLong());
         }
@@ -42,7 +42,7 @@ public class VoiceChannelListener extends ListenerAdapter {
 
             if (TimeTrackingManager.getInstance().getTimeTracking(event.getMember()) != null) {
                 double expAdded = LevelUtils.getExperienceFromVC(TimeTrackingManager.getInstance().getTimeTracking(event.getMember()).getTimeJoinedVC());
-                UserManager.getInstance().getUserByID(event.getMember().getUser().getIdLong()).giveExperience(expAdded);
+                UserManager.getInstance().getUserByUser(event.getMember().getUser(), event.getMember().getUser().getName()).giveExperience(expAdded);
 
                 TimeTrackingManager.getInstance().removeTimeTracking(event.getMember().getIdLong());
             }

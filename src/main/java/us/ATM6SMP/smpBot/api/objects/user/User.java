@@ -1,7 +1,9 @@
 package us.ATM6SMP.smpBot.api.objects.user;
 
+import net.dv8tion.jda.api.entities.Guild;
 import org.apache.commons.math3.util.Precision;
 import org.bson.types.ObjectId;
+import org.jetbrains.annotations.NotNull;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 import org.mongodb.morphia.annotations.IndexOptions;
@@ -9,8 +11,10 @@ import org.mongodb.morphia.annotations.Indexed;
 import us.ATM6SMP.smpBot.SMPBot;
 import us.ATM6SMP.smpBot.api.LevelUtils;
 
+import java.util.ArrayList;
+
 @Entity(value="users", noClassnameStored = true)
-public class User {
+public class User implements Comparable {
 
     public User() { }
 
@@ -20,6 +24,8 @@ public class User {
     @Indexed(options = @IndexOptions(unique = true))
     private long discordId;
 
+    private String currentDiscordName;
+    private ArrayList<String> previousDiscordNames;
     private double totalExperience;
     private double experience;
     private int level = 0;
@@ -102,5 +108,34 @@ public class User {
 
     private double roundedDouble(double input) {
         return Precision.round(input, 2);
+    }
+
+    @Override
+    public int compareTo(@NotNull Object o) {
+        if(o instanceof User) {
+            return compare(this.totalExperience, ((User) o).totalExperience);
+        } else {
+            return 0;
+        }
+    }
+
+    private int compare (double x, double y) {
+        return Double.compare(x, y);
+
+    }
+
+    public void checkName(String currentName) {
+        if(!currentName.equals(this.currentDiscordName)) {
+            setCurrentDiscordName(currentName);
+        }
+    }
+    private void setCurrentDiscordName(String currentDiscordName) {
+        if(this.currentDiscordName != null) {
+            addPreviousDiscordName(this.currentDiscordName);
+        }
+        this.currentDiscordName = currentDiscordName;
+    }
+    private void addPreviousDiscordName(String previousname) {
+        this.previousDiscordNames.add(previousname);
     }
 }
