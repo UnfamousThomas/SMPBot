@@ -43,6 +43,7 @@ public class InfoCommand extends Command {
         builder.setFooter("ATM6SMP BOT");
         builder.addField("Level", String.valueOf(userObject.getLevel()), true);
         builder.addField("Experience", String.valueOf(userObject.currentExperienceText()), true);
+        builder.addField("Total experience over time", String.valueOf(userObject.getTotalExperience()), false);
         builder.setImage(user.getEffectiveAvatarUrl());
 
         return builder.build();

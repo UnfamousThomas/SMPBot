@@ -18,7 +18,8 @@ public class TestCommand extends Command {
         addSubcommands(
                 new TestSubCommand(),
                 new TestLevelExperience(),
-                new TestEXPGiveCommand()
+                new TestEXPGiveCommand(),
+                new TestLevelExperience()
         );
     }
 
