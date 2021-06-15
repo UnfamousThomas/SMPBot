@@ -18,7 +18,7 @@ public class TestTotalEXPCommand extends Command {
 
     @Override
     public void run(Member m, List<String> args, MessageReceivedEvent event) {
-        int level = Integer.valueOf(args.get(0));
+        int level = Integer.parseInt(args.get(0));
 
         int i = 0;
 
