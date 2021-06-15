@@ -1,11 +1,14 @@
 package us.ATM6SMP.smpBot.api.objects.user;
 
+import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
 import us.ATM6SMP.smpBot.SMPBot;
 import us.ATM6SMP.smpBot.api.tasks.SaveUsersTaskTimer;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Timer;
@@ -35,6 +38,8 @@ public class UserManager extends ListenerAdapter {
         SaveUsersTaskTimer taskTimer = new SaveUsersTaskTimer(timer);
         timer.scheduleAtFixedRate(taskTimer, 100, 1000);
     }
+
+   //todo: figure out a way to save guilds & users so that I can access all users when calculating the actual leaderboards.
 
     private User getUserByID(Long id) {
         User user;

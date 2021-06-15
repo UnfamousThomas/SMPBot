@@ -138,4 +138,8 @@ public class User implements Comparable {
     private void addPreviousDiscordName(String previousname) {
         this.previousDiscordNames.add(previousname);
     }
+
+    public String getName() {
+        return currentDiscordName;
+    }
 }
