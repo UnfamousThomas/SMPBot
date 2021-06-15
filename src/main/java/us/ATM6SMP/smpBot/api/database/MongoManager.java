@@ -5,14 +5,12 @@ import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.Morphia;
-import us.ATM6SMP.smpBot.api.database.daos.GuildDAO;
 import us.ATM6SMP.smpBot.api.database.daos.InviteDAO;
 import us.ATM6SMP.smpBot.api.database.daos.TeamDAO;
 import us.ATM6SMP.smpBot.api.database.daos.UserDAO;
 import us.ATM6SMP.smpBot.api.objects.teams.InviteObject;
 import us.ATM6SMP.smpBot.api.objects.teams.TeamObject;
 import us.ATM6SMP.smpBot.api.objects.user.User;
-
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +24,6 @@ public class MongoManager {
     private TeamDAO teamDAO;
     private InviteDAO inviteDAO;
     private UserDAO userDAO;
-    private GuildDAO guildDAO;
 
     public void init(String host, int port) {
         ServerAddress serverAddress = new ServerAddress(host, port);
@@ -52,7 +49,6 @@ public class MongoManager {
         teamDAO = new TeamDAO(TeamObject.class, serverData);
         inviteDAO = new InviteDAO(InviteObject.class, serverData);
         userDAO = new UserDAO(User.class, serverData);
-        guildDAO = new GuildDAO(Guild.class, serverData);
     }
 
 
@@ -82,8 +78,5 @@ public class MongoManager {
         return userDAO;
     }
 
-    public GuildDAO getGuildDAO() {
-        return guildDAO;
-    }
 }
 

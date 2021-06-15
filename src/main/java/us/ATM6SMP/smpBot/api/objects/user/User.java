@@ -1,6 +1,5 @@
 package us.ATM6SMP.smpBot.api.objects.user;
 
-import net.dv8tion.jda.api.entities.Guild;
 import org.apache.commons.math3.util.Precision;
 import org.bson.types.ObjectId;
 import org.jetbrains.annotations.NotNull;
