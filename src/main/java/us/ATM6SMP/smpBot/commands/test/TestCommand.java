@@ -19,7 +19,8 @@ public class TestCommand extends Command {
                 new TestSubCommand(),
                 new TestLevelExperience(),
                 new TestEXPGiveCommand(),
-                new TestLevelExperience()
+                new TestLevelExperience(),
+                new TestTotalEXPCommand()
         );
     }
 

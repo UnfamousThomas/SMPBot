@@ -20,7 +20,7 @@ public class TestTotalEXPCommand extends Command {
     public void run(Member m, List<String> args, MessageReceivedEvent event) {
         int level = Integer.valueOf(args.get(0));
 
-        int i = 1;
+        int i = 0;
 
         int sum = 0;
         while(level <= i) {
