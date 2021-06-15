@@ -13,4 +13,4 @@ COPY target/SMPBot-jar-with-dependencies.jar /runtime/Bot.jar
 WORKDIR /runtime/
 
 # Run the downloaded jarfile with the previously specified arguments
-CMD java -jar -Xmx${JAVA_MIN_HEAP} -Xms${JAVA_MAX_HEAP} SMPbot.jar
+CMD java -jar -Xmx${JAVA_MIN_HEAP} -Xms${JAVA_MAX_HEAP} Bot.jar
