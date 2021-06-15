@@ -5,6 +5,7 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import org.apache.commons.math3.util.Precision;
 import us.ATM6SMP.smpBot.api.commands.Command;
 import us.ATM6SMP.smpBot.api.commands.CustomPermission;
 import us.ATM6SMP.smpBot.api.objects.user.UserManager;
@@ -43,7 +44,7 @@ public class InfoCommand extends Command {
         builder.setFooter("ATM6SMP BOT");
         builder.addField("Level", String.valueOf(userObject.getLevel()), true);
         builder.addField("Experience", String.valueOf(userObject.currentExperienceText()), true);
-        builder.addField("Total experience over time", String.valueOf(userObject.getTotalExperience()), false);
+        builder.addField("Total experience over time", String.valueOf(Precision.round(userObject.getTotalExperience(), 2)), false);
         builder.setImage(user.getEffectiveAvatarUrl());
 
         return builder.build();
