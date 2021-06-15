@@ -12,7 +12,7 @@ public class TestCommand extends Command {
     public TestCommand() {
         super("test");
         category = Category.USEFUL;
-        permission = CustomPermission.DEV;
+        permission = CustomPermission.ADMIN;
         usage = "test";
         description = "A command to check bot response.";
         addSubcommands(

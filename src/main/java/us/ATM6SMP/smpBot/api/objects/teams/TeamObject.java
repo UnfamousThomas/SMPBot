@@ -104,4 +104,8 @@ public class TeamObject {
     public void addMember(Long member) {
         this.listOfMemberIds.add(member);
     }
+
+    public void removeMember(Long member) {
+        this.listOfMemberIds.remove(member);
+    }
 }

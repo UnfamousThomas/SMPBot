@@ -9,7 +9,9 @@ public class TextChannelListener extends ListenerAdapter {
 
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
-        if(event.getAuthor().isBot()) return;
+        if(event.getAuthor().isBot()) {
+            return;
+        }
         UserManager.getInstance().getUserByID(event.getAuthor().getIdLong()).giveExperience(LevelUtils.getExperienceFromMessages(1));
     }
 }

@@ -9,13 +9,10 @@ import org.mongodb.morphia.annotations.Indexed;
 import us.ATM6SMP.smpBot.SMPBot;
 import us.ATM6SMP.smpBot.api.LevelUtils;
 
-import java.text.DecimalFormat;
-
 @Entity(value="users", noClassnameStored = true)
 public class User {
 
-    public User() {
-    }
+    public User() { }
 
     @Id
     private ObjectId id;
@@ -43,6 +40,8 @@ public class User {
                 privateChannel.sendMessage("You have levelled up to: " + level + ". " + percentageText()).queue();
             });
         });
+
+        checkForLevelup();
     }
 
     public String percentageText() {
@@ -68,14 +67,14 @@ public class User {
     private void checkForLevelup() {
         double required = LevelUtils.experienceFormula(level + 1);
 
-        if(experience >= required) {
+        if(this.experience >= required) {
             levelUp();
         }
     }
 
     public void giveExperience(double expAdded) {
         this.experience = this.experience + expAdded;
-        this.totalExperience = this.totalExperience + totalExperience;
+        this.totalExperience = this.totalExperience + expAdded;
         checkForLevelup();
     }
 

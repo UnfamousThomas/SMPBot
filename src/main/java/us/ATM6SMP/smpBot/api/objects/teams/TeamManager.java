@@ -162,8 +162,14 @@ public class TeamManager {
         joining.getGuild().addRoleToMember(joining.getUser().getIdLong(), joining.getGuild().getRoleById(joinedTeam.getRoleID())).queue();
     }
 
-    public void leaveTeam(Member leaving) {
+    public void leaveTeam(Member leaving, TeamObject leftTeam) {
+        leaving.getGuild().getTextChannelById(leftTeam.getTeamChatChannelId()).sendMessage(leaving.getEffectiveName() + " has left the team!").queue();
 
+        teams.remove(leftTeam);
+        leftTeam.removeMember(leaving.getUser().getIdLong());
+        teams.add(leftTeam);
+        mongoManager.getTeamDAO().save(leftTeam);
+        leaving.getGuild().removeRoleFromMember(leaving.getUser().getIdLong(), leaving.getGuild().getRoleById(leftTeam.getRoleID())).queue();
     }
 
     public void denyInvite(Member invited, TeamObject team, InviteObject invite) {

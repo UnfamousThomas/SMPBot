@@ -1,18 +1,17 @@
 package us.ATM6SMP.smpBot.api.objects.user;
 
-import com.google.api.client.util.ArrayMap;
 import net.dv8tion.jda.api.events.ReadyEvent;
-import net.dv8tion.jda.api.events.ShutdownEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
 import us.ATM6SMP.smpBot.SMPBot;
+import us.ATM6SMP.smpBot.api.tasks.SaveUsersTaskTimer;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Timer;
-import java.util.TimerTask;
 
 public class UserManager extends ListenerAdapter {
-    public ArrayMap<Long, User> users = new ArrayMap<>();
+    private static HashMap<Long, User> users = new HashMap<>();
 
     public static UserManager instance;
 
@@ -24,58 +23,37 @@ public class UserManager extends ListenerAdapter {
     }
     @Override
     public void onReady(@NotNull ReadyEvent event) {
-        System.out.println("Ready!");
         List<User> userList = SMPBot.getMongoManager().getUserDAO().find().asList();
         for (User user : userList) {
-            System.out.println("Saving: " + user.getDiscordId());
-            users.add(user.getDiscordId(), user);
+            users.put(user.getDiscordId(), user);
         }
-
-        users.forEach((aLong, user) -> {
-            System.out.println("Found: " + aLong);
-        });
-
-        scheduleTimer();
-
+        scheduleTask();
     }
 
-    public void scheduleTimer() {
-        System.out.println("While scheduling: " + users.size());
+    private void scheduleTask() {
         Timer timer = new Timer();
-        timer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                updateData();
-            }
-        }, 1000, 10000L);
+        SaveUsersTaskTimer taskTimer = new SaveUsersTaskTimer(timer);
+        timer.scheduleAtFixedRate(taskTimer, 100, 1000);
     }
-
-    private void updateData() {
-        System.out.println("Initializing save.");
-        System.out.println(users.size() + " users found in list.");
-        users.forEach(((aLong, user) -> {
-            System.out.println("Saving: " + user.getDiscordId());
-            SMPBot.getMongoManager().getUserDAO().save(user);
-            System.out.println("Save succesful!");
-        }));
-    }
-
-    @Override
-    public void onShutdown(ShutdownEvent event) {
-        System.out.println("Bye!");
-        users.forEach(((aLong, user) -> {
-            SMPBot.getMongoManager().getUserDAO().save(user);
-        }));
-    }
-
 
     public User getUserByID(Long id) {
-        User user = users.get(id);
-
-        if(user == null) {
+        User user;
+        if(!checkIfUserExists(id)) {
             user = createNewUser(id);
+        } else {
+            user = users.get(id);
         }
         return user;
+    }
+
+    private boolean checkIfUserExists(Long id) {
+        User user = users.get(id);
+
+        if(user != null) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public User getUserByUser(net.dv8tion.jda.api.entities.User user) {
@@ -85,13 +63,17 @@ public class UserManager extends ListenerAdapter {
     public User createNewUser(Long id) {
         User user = new User();
         user.setDiscordId(id);
-        saveNewUser(user);
-        System.out.println("Saving new user: " + user.getDiscordId());
+        return saveNewUser(user);
+    }
+
+    private User saveNewUser(User user) {
+        SMPBot.getMongoManager().getUserDAO().save(user);
+        users.put(user.getDiscordId(), user);
+
         return user;
     }
 
-    private void saveNewUser(User user) {
-        users.add(user.getDiscordId(), user);
-        SMPBot.getMongoManager().getUserDAO().save(user);
+    public HashMap<Long, User> getUsers() {
+        return users;
     }
 }

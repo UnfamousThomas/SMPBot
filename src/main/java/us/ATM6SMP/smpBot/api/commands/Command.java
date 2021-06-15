@@ -34,6 +34,8 @@ public abstract class Command {
             return;
         }
 
+        if(event.getAuthor().isBot()) return;
+
 
         if (args.size() > 0) {
             Command subcommand = subcommands.get(args.get(0).toLowerCase());

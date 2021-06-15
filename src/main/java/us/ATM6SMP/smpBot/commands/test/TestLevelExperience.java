@@ -15,7 +15,7 @@ public class TestLevelExperience extends Command {
         super("level");
         description = "test levels";
         usage = "!test level";
-        permission = CustomPermission.DEV;
+        permission = CustomPermission.ADMIN;
         category = Category.USEFUL;
     }
 
