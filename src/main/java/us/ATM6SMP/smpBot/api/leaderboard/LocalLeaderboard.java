@@ -41,15 +41,17 @@ public class LocalLeaderboard {
         builder.append(guildName);
         builder.append(" - Leaderboards:\n");
         while(amount >= i) {
-            builder.append(i);
-            builder.append(".");
-            builder.append(userList.get(i - 1).getName());
-            builder.append(" - ");
-            builder.append(userList.get(i - 1).getLevel());
-            builder.append(" (");
-            builder.append(Precision.round(userList.get(i - 1).getTotalExperience(), 2));
-            builder.append(" )");
-            builder.append("\n");
+            if(userList.get(i - 1).getTotalExperience() > 0) {
+                builder.append(i);
+                builder.append(".");
+                builder.append(userList.get(i - 1).getName());
+                builder.append(" - ");
+                builder.append(userList.get(i - 1).getLevel());
+                builder.append(" (");
+                builder.append(Precision.round(userList.get(i - 1).getTotalExperience(), 2));
+                builder.append(" )");
+                builder.append("\n");
+            }
             i = i +1;
         }
 

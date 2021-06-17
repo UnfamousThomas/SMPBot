@@ -33,15 +33,17 @@ public class GlobalLeaderboard {
 
         builder.append(" Global leaderboards:\n");
         while (amount >= i) {
-            builder.append(i);
-            builder.append(".");
-            builder.append(users.get(i - 1).getName());
-            builder.append(" - ");
-            builder.append(users.get(i - 1).getLevel());
-            builder.append(" (");
-            builder.append(Precision.round(users.get(i - 1).getTotalExperience(), 2));
-            builder.append(" )");
-            builder.append("\n");
+            if(users.get(i - 1).getTotalExperience() > 0) {
+                builder.append(i);
+                builder.append(".");
+                builder.append(users.get(i - 1).getName());
+                builder.append(" - ");
+                builder.append(users.get(i - 1).getLevel());
+                builder.append(" (");
+                builder.append(Precision.round(users.get(i - 1).getTotalExperience(), 2));
+                builder.append(" )");
+                builder.append("\n");
+            }
             i = i + 1;
         }
 
