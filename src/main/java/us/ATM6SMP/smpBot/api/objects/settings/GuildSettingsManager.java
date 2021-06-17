@@ -16,9 +16,10 @@ public class GuildSettingsManager {
     }
 
     public GuildSettings getGuildSettings(Long id) {
-        GuildSettings guildSettings = null;
+        GuildSettings guildSettings;
         if(!(guildSettingsMap.containsKey(id))) {
             guildSettings = new GuildSettings();
+            guildSettings.setGuildId(id);
             SMPBot.getMongoManager().getGuildSettingsDAO().save(guildSettings);
         } else {
             guildSettings = guildSettingsMap.get(id);

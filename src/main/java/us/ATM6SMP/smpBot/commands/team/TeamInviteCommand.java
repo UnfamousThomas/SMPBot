@@ -6,6 +6,7 @@ import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import us.ATM6SMP.smpBot.api.commands.Command;
 import us.ATM6SMP.smpBot.api.commands.CustomPermission;
+import us.ATM6SMP.smpBot.api.objects.settings.GuildSettingsManager;
 import us.ATM6SMP.smpBot.api.objects.teams.TeamManager;
 import us.ATM6SMP.smpBot.api.objects.teams.TeamObject;
 
@@ -69,6 +70,11 @@ public class TeamInviteCommand extends Command {
         });
         if(membersTeam[0] == leaderTeam[0]) {
             textChannel.sendMessage("Cannot invite a member already in your team").queue();
+            return;
+        }
+        int max = GuildSettingsManager.getInstance().getGuildSettings(textChannel.getGuild().getIdLong()).getMaxTeam();
+        if(leaderTeam[0].getListOfMemberIds().size() == max) {
+            textChannel.sendMessage("Team already has " + max + "members. This is the maximum amount. Kick someone and try again").queue();
             return;
         }
 

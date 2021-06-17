@@ -47,7 +47,7 @@ public abstract class Command {
         }
 
         if (args.size() < minArgs || args.size() > maxArgs) {
-            event.getChannel().sendMessage("Invalid usage. Please use .help.").queue();
+            event.getChannel().sendMessage("Invalid usage. Please use" + "help.").queue();
             return;
         }
 

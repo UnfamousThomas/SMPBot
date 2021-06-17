@@ -1,11 +1,9 @@
 package us.ATM6SMP.smpBot.commands.leaderboards;
 
 import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import us.ATM6SMP.smpBot.api.commands.Command;
 import us.ATM6SMP.smpBot.api.commands.CustomPermission;
-import us.ATM6SMP.smpBot.api.leaderboard.GlobalLeaderboard;
 import us.ATM6SMP.smpBot.api.leaderboard.LocalLeaderboard;
 
 import java.util.List;

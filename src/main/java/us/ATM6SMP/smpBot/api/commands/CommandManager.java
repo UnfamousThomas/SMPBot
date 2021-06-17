@@ -5,6 +5,7 @@ import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import us.ATM6SMP.smpBot.api.Logger;
+import us.ATM6SMP.smpBot.api.objects.settings.GuildSettingsManager;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,15 +38,12 @@ public class CommandManager extends ListenerAdapter {
         CommandManager manager = new CommandManager();
         instance = manager;
         builder.addEventListeners(manager);
-
-        prefix = "!";
-
     }
 
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
         //if (DataFields.blacklistedPeopleList.get(event.getAuthor().getIdLong()) != null) return;
-        if (prefix == null) prefix = ".";
+        String prefix = GuildSettingsManager.getInstance().getGuildSettings(event.getGuild().getIdLong()).getPrefix();
 
         String[] argArray = event.getMessage().getContentRaw().split("\\s+");
         if (!event.getAuthor().isBot()) {

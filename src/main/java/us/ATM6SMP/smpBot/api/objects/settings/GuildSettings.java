@@ -35,4 +35,8 @@ public class GuildSettings {
         this.prefix = prefix;
         return this;
     }
+
+    public void setGuildId(Long guildId) {
+        this.guildId = guildId;
+    }
 }

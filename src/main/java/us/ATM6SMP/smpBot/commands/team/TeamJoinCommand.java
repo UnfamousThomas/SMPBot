@@ -4,6 +4,7 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import us.ATM6SMP.smpBot.api.commands.Command;
 import us.ATM6SMP.smpBot.api.commands.CustomPermission;
+import us.ATM6SMP.smpBot.api.objects.settings.GuildSettingsManager;
 import us.ATM6SMP.smpBot.api.objects.teams.InviteObject;
 import us.ATM6SMP.smpBot.api.objects.teams.TeamManager;
 import us.ATM6SMP.smpBot.api.objects.teams.TeamObject;
@@ -44,14 +45,24 @@ public class TeamJoinCommand extends Command {
         }
 
         final TeamObject[] object = {null};
+        final boolean[] limitReached = {false};
+
         manager.getTeams().forEach(teamObject -> {
             if (teamObject.getLeaderId().equals(id)) {
                 object[0] = teamObject;
+                if(teamObject.getListOfMemberIds().size() == GuildSettingsManager.getInstance().getGuildSettings(e.getGuild().getIdLong()).getMaxTeam()) {
+                    limitReached[0] = true;
+                }
             }
         });
 
         if (object[0] == null) {
             e.getTextChannel().sendMessage("Could not find team. Try again!").queue();
+            return;
+        }
+
+        if(limitReached[0]) {
+            e.getTextChannel().sendMessage("Team has reached the maximum amount of members. Try again after someone leaves.").queue();
             return;
         }
 
