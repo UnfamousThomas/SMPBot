@@ -49,7 +49,7 @@ public class LocalLeaderboard {
                 builder.append(userList.get(i - 1).getLevel());
                 builder.append(" (");
                 builder.append(Precision.round(userList.get(i - 1).getTotalExperience(), 2));
-                builder.append(" )");
+                builder.append(")");
                 builder.append("\n");
             }
             i = i +1;

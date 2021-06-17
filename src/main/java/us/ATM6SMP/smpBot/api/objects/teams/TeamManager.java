@@ -181,6 +181,56 @@ public class TeamManager {
 
     }
 
+    public void kickTeam(Member leaving, TeamObject leftTeam) {
+        leaving.getGuild().getTextChannelById(leftTeam.getTeamChatChannelId()).sendMessage(leaving.getEffectiveName() + " has been kicked from the team!").queue();
+
+        teams.remove(leftTeam);
+        leftTeam.removeMember(leaving.getUser().getIdLong());
+        teams.add(leftTeam);
+        mongoManager.getTeamDAO().save(leftTeam);
+        leaving.getGuild().removeRoleFromMember(leaving.getUser().getIdLong(), leaving.getGuild().getRoleById(leftTeam.getRoleID())).queue();
+
+        UserManager.getInstance().getUserByMember(leaving, leaving.getUser().getName()).setTeam(null);
+
+        leaving.getUser().openPrivateChannel().queue(privateChannel -> {
+            privateChannel.sendMessage("You have been kicked from the team " + leftTeam.getName()).queue();
+        });
+
+    }
+
+    public void renameTeam(String newName, TeamObject team, Member leader) {
+        Guild guild = leader.getGuild();
+        teams.remove(team);
+
+        //set new team name
+        team.setName(newName);
+        //set new role name
+        guild.getRoleById(team.getRoleID()).getManager().setName(newName + "-team").queue();
+
+        guild.getTextChannelById(team.getTeamChatChannelId()).getManager().setName(newName +"-text").queue();
+
+        guild.getVoiceChannelById(team.getTeamVoiceChannelId()).getManager().setName(newName +"-voice").queue();
+
+        mongoManager.getTeamDAO().save(team);
+        teams.add(team);
+        guild.getTextChannelById(team.getTeamChatChannelId()).sendMessage("Team has been renamed to: " + newName).queue();
+
+    }
+
+    public void recolorTeam(Color color, TeamObject teamObject, Member leader) {
+        Guild guild = leader.getGuild();
+        teams.remove(teamObject);
+
+        teamObject.setColor(color);
+
+        guild.getRoleById(teamObject.getRoleID()).getManager().setColor(color).queue();
+
+        mongoManager.getTeamDAO().save(teamObject);
+        teams.add(teamObject);
+
+        guild.getTextChannelById(teamObject.getTeamChatChannelId()).sendMessage("Team color has been changed.").queue();
+    }
+
     public void denyInvite(Member invited, TeamObject team, InviteObject invite) {
         invited.getGuild().getTextChannelById(team.getTeamChatChannelId()).sendMessage(invited.getEffectiveName() + " has denied the invite to the team!").queue();
 

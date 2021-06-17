@@ -41,7 +41,7 @@ public class GlobalLeaderboard {
                 builder.append(users.get(i - 1).getLevel());
                 builder.append(" (");
                 builder.append(Precision.round(users.get(i - 1).getTotalExperience(), 2));
-                builder.append(" )");
+                builder.append(")");
                 builder.append("\n");
             }
             i = i + 1;
