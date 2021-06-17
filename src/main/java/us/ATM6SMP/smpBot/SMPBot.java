@@ -4,7 +4,7 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.requests.GatewayIntent;
-import net.dv8tion.jda.api.utils.MemberCachePolicy;
+import net.dv8tion.jda.api.utils.ChunkingFilter;
 import us.ATM6SMP.smpBot.api.DataHandler;
 import us.ATM6SMP.smpBot.api.Logger;
 import us.ATM6SMP.smpBot.api.commands.CommandManager;
@@ -14,6 +14,7 @@ import us.ATM6SMP.smpBot.api.objects.user.UserManager;
 import us.ATM6SMP.smpBot.commands.AnnounceCommand;
 import us.ATM6SMP.smpBot.commands.HelpCommand;
 import us.ATM6SMP.smpBot.commands.InfoCommand;
+import us.ATM6SMP.smpBot.commands.leaderboards.LeaderboardCommand;
 import us.ATM6SMP.smpBot.commands.dev.ShutdownCommand;
 import us.ATM6SMP.smpBot.commands.team.TeamCommand;
 import us.ATM6SMP.smpBot.commands.test.TestCommand;
@@ -34,9 +35,9 @@ public class SMPBot {
             JDABuilder builder = JDABuilder
                     .createDefault("ODQzMjEzNDIyMzE3NjY2MzI1.YKAlsg.Nrdol1HLNTMfBaum35xqlW12hyk")
                     .setActivity(Activity.playing("on the SMP!"))
-                    .enableIntents(GatewayIntent.GUILD_MEMBERS)
                     .setBulkDeleteSplittingEnabled(false)
-                    .setMemberCachePolicy(MemberCachePolicy.ALL);
+                    .setChunkingFilter(ChunkingFilter.ALL) // enable member chunking for all guilds
+                    .enableIntents(GatewayIntent.GUILD_MEMBERS);
 
 
             TeamManager.getInstance().load();
@@ -48,7 +49,8 @@ public class SMPBot {
                     new HelpCommand(),
                     new ShutdownCommand(),
                     new InfoCommand(),
-                    new AnnounceCommand()
+                    new AnnounceCommand(),
+                    new LeaderboardCommand()
             );
 
 

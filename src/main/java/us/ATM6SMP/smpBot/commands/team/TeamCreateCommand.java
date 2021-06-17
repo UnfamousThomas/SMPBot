@@ -47,7 +47,7 @@ public class TeamCreateCommand extends Command {
             } else {
                 realColor = getColor(color);
             }
-            TeamManager.getInstance().createTeam(m.getUser().getIdLong(), realColor, name, guild);
+            TeamManager.getInstance().createTeam(m, realColor, name, guild);
 
             channel.sendMessage("Created team: " + name).queue();
         } else {

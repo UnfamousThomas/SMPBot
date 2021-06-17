@@ -5,6 +5,7 @@ import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
 import us.ATM6SMP.smpBot.SMPBot;
 import us.ATM6SMP.smpBot.api.database.MongoManager;
+import us.ATM6SMP.smpBot.api.objects.user.UserManager;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -32,17 +33,18 @@ public class TeamManager {
         invites.addAll(invitesLoaded);
     }
 
-    public void createTeam(long leader, Color color, String name, Guild guild) {
+    public void createTeam(Member member, Color color, String name, Guild guild) {
         TeamObject team = new TeamObject();
-        team.setLeaderId(leader);
+        team.setLeaderId(member.getIdLong());
         team.setName(name);
         team.setColor(color);
-        team.addMember(leader);
+        team.addMember(member.getIdLong());
 
-        createRole(team, guild);
+        createRole(team, guild, member);
+
     }
 
-    public void createRole(TeamObject team, Guild guild) {
+    public void createRole(TeamObject team, Guild guild, Member leader) {
         guild.createRole()
                 .setColor(team.getColor())
                 .setName(team.getName() + "-team")
@@ -50,18 +52,18 @@ public class TeamManager {
                 .queue(role -> {
                     team.setRoleID(role.getIdLong());
                     guild.addRoleToMember(team.getLeaderId(), role).queue();
-                    createChannels(team, guild);
+                    createChannels(team, guild, leader);
                 });
     }
 
-    public void createChannels(TeamObject team, Guild guild) {
+    public void createChannels(TeamObject team, Guild guild, Member leader) {
         Role role = guild.getRoleById(team.getRoleID());
         guild.createTextChannel(team.getName() + "-" + "text", guild.getCategoryById("840138217894576138"))
                 .queue(textChannel -> {
                     textChannel.createPermissionOverride(role).setAllow(Permission.VIEW_CHANNEL).queue();
                     textChannel.createPermissionOverride(guild.getPublicRole()).setDeny(Permission.VIEW_CHANNEL).queue();
                     team.setTeamChatChannelId(textChannel.getIdLong());
-                    saveTeam(team);
+                    saveTeam(team, leader);
                 });
 
         guild.createVoiceChannel(team.getName() + "-" + "voice", guild.getCategoryById("840138217894576138"))
@@ -69,19 +71,21 @@ public class TeamManager {
                     voiceChannel.createPermissionOverride(role).setAllow(Permission.VIEW_CHANNEL).queue();
                     voiceChannel.createPermissionOverride(guild.getPublicRole()).setDeny(Permission.VIEW_CHANNEL).queue();
                     team.setTeamVoiceChannelId(voiceChannel.getIdLong());
-                    saveTeam(team);
+                    saveTeam(team, leader);
 
 
                 });
 
-        saveTeam(team);
+        saveTeam(team, leader);
 
     }
 
-    private void saveTeam(TeamObject team) {
+    private void saveTeam(TeamObject team, Member leader) {
         teams.remove(team);
         mongoManager.getTeamDAO().save(team);
+        UserManager.getInstance().getUserByMember(leader, leader.getUser().getName()).setTeam(team);
         teams.add(team);
+
     }
 
     public void deleteTeam(TeamObject team, Guild guild) {
@@ -160,6 +164,8 @@ public class TeamManager {
         teams.add(joinedTeam);
         mongoManager.getTeamDAO().save(joinedTeam);
         joining.getGuild().addRoleToMember(joining.getUser().getIdLong(), joining.getGuild().getRoleById(joinedTeam.getRoleID())).queue();
+
+        UserManager.getInstance().getUserByMember(joining, joining.getUser().getName()).setTeam(joinedTeam);
     }
 
     public void leaveTeam(Member leaving, TeamObject leftTeam) {
@@ -170,6 +176,9 @@ public class TeamManager {
         teams.add(leftTeam);
         mongoManager.getTeamDAO().save(leftTeam);
         leaving.getGuild().removeRoleFromMember(leaving.getUser().getIdLong(), leaving.getGuild().getRoleById(leftTeam.getRoleID())).queue();
+
+        UserManager.getInstance().getUserByMember(leaving, leaving.getUser().getName()).setTeam(null);
+
     }
 
     public void denyInvite(Member invited, TeamObject team, InviteObject invite) {

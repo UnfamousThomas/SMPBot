@@ -3,17 +3,15 @@ package us.ATM6SMP.smpBot.api.objects.user;
 import org.apache.commons.math3.util.Precision;
 import org.bson.types.ObjectId;
 import org.jetbrains.annotations.NotNull;
-import org.mongodb.morphia.annotations.Entity;
-import org.mongodb.morphia.annotations.Id;
-import org.mongodb.morphia.annotations.IndexOptions;
-import org.mongodb.morphia.annotations.Indexed;
+import org.mongodb.morphia.annotations.*;
 import us.ATM6SMP.smpBot.SMPBot;
 import us.ATM6SMP.smpBot.api.LevelUtils;
+import us.ATM6SMP.smpBot.api.objects.teams.TeamObject;
 
 import java.util.ArrayList;
 
 @Entity(value="users", noClassnameStored = true)
-public class User implements Comparable {
+public class User implements Comparable<User> {
 
     public User() { }
 
@@ -28,6 +26,10 @@ public class User implements Comparable {
     private double totalExperience;
     private double experience;
     private int level = 0;
+
+    @Reference
+    private TeamObject team;
+
 
     public void setDiscordId(long discordId) {
         this.discordId = discordId;
@@ -95,7 +97,7 @@ public class User implements Comparable {
         return missing;
     }
 
-    public double getTotalExperience() {
+    public Double getTotalExperience() {
         return totalExperience;
     }
 
@@ -107,15 +109,6 @@ public class User implements Comparable {
 
     private double roundedDouble(double input) {
         return Precision.round(input, 2);
-    }
-
-    @Override
-    public int compareTo(@NotNull Object o) {
-        if(o instanceof User) {
-            return compare(this.totalExperience, ((User) o).totalExperience);
-        } else {
-            return 0;
-        }
     }
 
     private int compare (double x, double y) {
@@ -141,4 +134,35 @@ public class User implements Comparable {
     public String getName() {
         return currentDiscordName;
     }
+
+    @Override
+    public int compareTo(@NotNull User o) {
+        return this.getTotalExperience().compareTo(((User) o).getTotalExperience());
+    }
+
+    public void setTeam(TeamObject team) {
+        this.team = team;
+    }
+
+    public TeamObject getTeam() {
+        return team;
+    }
+
+    public String getTeamName() {
+        if(getTeam() != null) {
+            return getTeam().getName();
+        } else {
+            return "Not in a team";
+        }
+    }
+
+    public boolean checkInTeam() {
+        if(getTeam() != null) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
 }
