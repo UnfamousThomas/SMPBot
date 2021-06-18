@@ -28,7 +28,7 @@
                 <archive>
                     <manifest>
                         <mainClass>
-                            us.ATM6SMP.smpBot.SMPBot
+                            us.unfamousthomas.bot.MainClass
                         </mainClass>
                     </manifest>
                 </archive>
