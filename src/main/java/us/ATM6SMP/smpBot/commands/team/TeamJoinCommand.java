@@ -31,42 +31,31 @@ public class TeamJoinCommand extends Command {
     }
 
     private void accept(Member m, MessageReceivedEvent e, Long id) {
-        TeamManager manager = TeamManager.getInstance();
-        final InviteObject[] inviteObject = {null};
-        manager.getInvites().forEach(invite -> {
-            if(invite.getMemberSentTo() == m.getIdLong() && invite.getMemberSentFrom().equals(id)) {
-                inviteObject[0] = invite;
-            }
-        });
+        InviteObject invite = TeamManager.getInstance().getInviteFromGuildByLeaderId(id, m.getIdLong(), m.getGuild());
 
-        if(inviteObject[0] == null) {
-            e.getTextChannel().sendMessage("Error finding invite.").queue();
+        if (invite == null) {
+            e.getTextChannel().sendMessage("Could not find invite.").queue();
             return;
         }
 
-        final TeamObject[] object = {null};
-        final boolean[] limitReached = {false};
-
-        manager.getTeams().forEach(teamObject -> {
-            if (teamObject.getLeaderId().equals(id)) {
-                object[0] = teamObject;
-                if(teamObject.getListOfMemberIds().size() == GuildSettingsManager.getInstance().getGuildSettings(e.getGuild().getIdLong()).getMaxTeam()) {
-                    limitReached[0] = true;
-                }
-            }
-        });
-
-        if (object[0] == null) {
-            e.getTextChannel().sendMessage("Could not find team. Try again!").queue();
+        if(!invite.isActive()) {
+            e.getTextChannel().sendMessage("Invite is no longer active.").queue();
             return;
         }
 
-        if(limitReached[0]) {
-            e.getTextChannel().sendMessage("Team has reached the maximum amount of members. Try again after someone leaves.").queue();
+        TeamObject team = TeamManager.getInstance().getTeamLeaderOfById(id, m.getGuild());
+
+        if (team == null) {
+            e.getTextChannel().sendMessage("Team for ID not found.").queue();
             return;
         }
 
-        manager.joinTeam(m, object[0], inviteObject[0]);
+        if (team.getListOfMemberIds().size() == GuildSettingsManager.getInstance().getGuildSettings(e.getGuild().getIdLong()).getMaxTeam()) {
+            e.getTextChannel().sendMessage("Limit reached.").queue();
+            return;
+        }
+
+        TeamManager.getInstance().joinTeam(m, team, invite);
 
     }
 }

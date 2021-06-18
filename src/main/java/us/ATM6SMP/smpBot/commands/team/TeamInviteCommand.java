@@ -23,67 +23,39 @@ public class TeamInviteCommand extends Command {
         description = "Used to send an invite";
     }
 
-    TeamManager manager = TeamManager.getInstance();
-
     @Override
     public void run(Member m, List<String> args, MessageReceivedEvent event) {
         invite(m, event.getTextChannel(), event.getMessage());
     }
 
     private void invite(Member m, TextChannel textChannel, Message message) {
-        List<Member> members = message.getMentionedMembers();
-        if(members.size() == 0) {
-            textChannel.sendMessage("You did not tag any user.").queue();
-            return;
-        } else if(members.size() != 1) {
-            textChannel.sendMessage("Please invite one person at a time.").queue();
-            return;
-        } else if(members.contains(m)) {
-            textChannel.sendMessage("You cannot invite yourself").queue();
+        TeamObject team  = TeamManager.getInstance().getTeamLeaderOf(m);
+
+
+        if(team == null) {
+            textChannel.sendMessage("Could not find you as leader of team").queue();
             return;
         }
 
-        final int[] index = new int[1];
-        final boolean[] found = new boolean[1];
-
-        Member memberToInvite = members.get(0);
-        manager.getTeams().forEach(team -> {
-            if (team.getLeaderId() == m.getIdLong()) {
-                index[0] = manager.getTeams().indexOf(team);
-                found[0] = true;
-            }
-        });
-
-        final TeamObject[] membersTeam = {null};
-
-        manager.getTeams().forEach(team -> {
-            if(team.getListOfMemberIds().contains(members.get(0).getUser().getIdLong())) {
-                membersTeam[0] = team;
-            }
-        });
-        final TeamObject[] leaderTeam = {null};
-
-        manager.getTeams().forEach(team -> {
-            if(team.getLeaderId() == m.getIdLong()) {
-                leaderTeam[0] = team;
-            }
-        });
-        if(membersTeam[0] == leaderTeam[0]) {
-            textChannel.sendMessage("Cannot invite a member already in your team").queue();
-            return;
-        }
-        int max = GuildSettingsManager.getInstance().getGuildSettings(textChannel.getGuild().getIdLong()).getMaxTeam();
-        if(leaderTeam[0].getListOfMemberIds().size() == max) {
-            textChannel.sendMessage("Team already has " + max + "members. This is the maximum amount. Kick someone and try again").queue();
+        if(team.getListOfMemberIds().size() == GuildSettingsManager.getInstance().getGuildSettings(m.getGuild().getIdLong()).getMaxTeam()) {
+            textChannel.sendMessage("Max member count already reached").queue();
             return;
         }
 
-        if(found[0]) {
-            manager.inviteToTeam(manager.getTeams().get(index[0]), memberToInvite);
-            textChannel.sendMessage("Invite sent!").queue();
-        } else {
-            textChannel.sendMessage("Could not find you as a leader in a team!").queue();
+        if(message.getMentionedMembers().size() != 1) {
+            textChannel.sendMessage("Mentioned members size is not 1.").queue();
+            return;
         }
+
+        Member target = message.getMentionedMembers().get(0);
+        TeamObject targetTeam = TeamManager.getInstance().getTeamMemberOf(target);
+
+        if(targetTeam != null) {
+            textChannel.sendMessage("User is already part of a team").queue();
+            return;
+        }
+
+        TeamManager.getInstance().inviteToTeam(team, target);
 
     }
 

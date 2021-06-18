@@ -65,6 +65,10 @@ public class UserManager extends ListenerAdapter {
         return botUser;
     }
 
+    public User getUserById(Long id) {
+        return getUserByID(id);
+    }
+
     public User createNewUser(Long id) {
         User user = new User();
         user.setDiscordId(id);

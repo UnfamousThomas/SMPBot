@@ -33,6 +33,7 @@ public class TeamRecolorCommand extends Command {
 
         if(team == null) {
             event.getTextChannel().sendMessage("Could not find you as a leader of a team.").queue();
+            return;
         }
          TeamManager.getInstance().recolorTeam(realColor, team, m);
 

@@ -19,20 +19,16 @@ public class TeamKickCommand extends Command {
             event.getTextChannel().sendMessage("You need to mention the user you wish to kick from your team.").queue();
             return;
         }
-        TeamObject toRemove = null;
-        for (TeamObject team : TeamManager.getInstance().getTeams()) {
-            for (Long memberId : team.getListOfMemberIds()) {
-                if(memberId.equals(m.getIdLong())) {
-                    toRemove = team;
-                }
-            }
 
-            if(toRemove != null) {
-                TeamManager.getInstance().kickTeam(m, toRemove);
-            } else {
-                event.getTextChannel().sendMessage("Team not found").queue();
-            }
+        TeamObject teamToKickFrom = TeamManager.getInstance().getTeamLeaderOf(m);
+
+        if(teamToKickFrom == null) {
+            event.getTextChannel().sendMessage("Could not find team bla bla bla").queue();
+            return;
         }
+        Member target = event.getMessage().getMentionedMembers().get(0);
+
+        TeamManager.getInstance().kickTeam(target, teamToKickFrom);
 
     }
 }

@@ -4,6 +4,7 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import us.ATM6SMP.smpBot.api.commands.Command;
 import us.ATM6SMP.smpBot.api.commands.CustomPermission;
+import us.ATM6SMP.smpBot.api.objects.settings.GuildSettingsManager;
 import us.ATM6SMP.smpBot.api.objects.teams.InviteObject;
 import us.ATM6SMP.smpBot.api.objects.teams.TeamManager;
 import us.ATM6SMP.smpBot.api.objects.teams.TeamObject;
@@ -30,33 +31,28 @@ public class TeamDenyCommand extends Command {
         }
     }
 
+
     private void deny(Member m, MessageReceivedEvent e, Long id) {
-        TeamManager manager = TeamManager.getInstance();
-        final InviteObject[] inviteObject = {null};
-        manager.getInvites(m.getGuild()).forEach(invite -> {
-            if(invite.getMemberSentTo() == m.getIdLong() && invite.getMemberSentFrom().equals(id)) {
-                inviteObject[0] = invite;
-            }
-        });
+        InviteObject invite = TeamManager.getInstance().getInviteFromGuildByLeaderId(id, m.getIdLong(), m.getGuild());
 
-        if(inviteObject[0] == null) {
-            e.getTextChannel().sendMessage("Error finding invite.").queue();
+        if (invite == null) {
+            e.getTextChannel().sendMessage("Could not find invite.").queue();
             return;
         }
 
-        final TeamObject[] object = {null};
-        manager.getTeams(m.getGuild()).forEach(teamObject -> {
-            if (teamObject.getLeaderId().equals(id)) {
-                object[0] = teamObject;
-            }
-        });
-
-        if (object[0] == null) {
-            e.getTextChannel().sendMessage("Could not find team. Try again!").queue();
+        if(!invite.isActive()) {
+            e.getTextChannel().sendMessage("Invite is no longer active.").queue();
             return;
         }
 
-        manager.denyInvite(m, object[0], inviteObject[0]);
+        TeamObject team = TeamManager.getInstance().getTeamLeaderOfById(id, m.getGuild());
+
+        if (team == null) {
+            e.getTextChannel().sendMessage("Team for ID not found.").queue();
+            return;
+        }
+
+        TeamManager.getInstance().denyInvite(m, team, invite);
 
     }
 }

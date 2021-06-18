@@ -116,7 +116,6 @@ public class TeamManager {
     }
 
     public void deleteTeam(TeamObject team, Guild guild) {
-
         removeTeam(team, guild);
         TextChannel textChannel = guild.getTextChannelById(team.getTeamChatChannelId());
         VoiceChannel voiceChannel = guild.getVoiceChannelById(team.getTeamVoiceChannelId());
@@ -247,7 +246,12 @@ public class TeamManager {
     public void setNewLeader(Member currentLeader, Member newLeader, TeamObject team) {
         removeTeam(team, currentLeader.getGuild());
         team.setLeaderId(newLeader.getIdLong());
+        for (InviteObject invite : team.getInvites()) {
+            invite.setActive(false);
+            SMPBot.getMongoManager().getInviteDAO().save(invite);
+        }
         addTeam(team, newLeader.getGuild());
+        newLeader.getGuild().getTextChannelById(team.getTeamChatChannelId()).sendMessage("New team leader has been assigned: " + newLeader.getUser().getName()).queue();
 
         SMPBot.getMongoManager().getTeamDAO().save(team);
     }
@@ -318,12 +322,42 @@ public class TeamManager {
     public TeamObject getTeamMemberOf(Member searching) {
         return UserManager.getInstance().getUserByMember(searching, searching.getUser().getName()).getTeam(searching.getGuild());
     }
+    public TeamObject getTeamMemberOfById(Long searchingId, Guild guild) {
+        return UserManager.getInstance().getUserById(searchingId).getTeam(guild);
+    }
+
+
+    public ArrayList<InviteObject> getInviteFromGuild(long guildId) {
+        return invitesMap.get(guildId);
+    }
+
+    public InviteObject getInviteFromGuildByLeaderId(long leaderId, long userId, Guild guild) {
+        InviteObject invite = null;
+        for (InviteObject inviteObject : getInviteFromGuild(guild.getIdLong())) {
+            if(inviteObject.getMemberSentFrom() == leaderId && userId == inviteObject.getMemberSentTo()) {
+                invite = inviteObject;
+            }
+        }
+        return invite;
+    }
 
     public TeamObject getTeamLeaderOf(Member searching) {
         TeamObject team = getTeamMemberOf(searching);
 
         if(team != null) {
             if(team.getLeaderId() == searching.getIdLong()) {
+                return team;
+            }
+        }
+
+        return null;
+    }
+
+    public TeamObject getTeamLeaderOfById(long id, Guild guild) {
+        TeamObject team = getTeamMemberOfById(id, guild);
+
+        if(team != null) {
+            if(team.getLeaderId() == id) {
                 return team;
             }
         }
