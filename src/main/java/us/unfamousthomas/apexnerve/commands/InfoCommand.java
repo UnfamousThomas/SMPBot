@@ -6,6 +6,7 @@ import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import org.apache.commons.math3.util.Precision;
+import us.unfamousthomas.apexnerve.api.Text;
 import us.unfamousthomas.apexnerve.api.commands.Command;
 import us.unfamousthomas.apexnerve.api.commands.CustomPermission;
 import us.unfamousthomas.apexnerve.api.objects.user.UserManager;
@@ -33,11 +34,11 @@ public class InfoCommand extends Command {
                    if(member != null) {
                        event.getChannel().sendMessage(generateEmbed(member)).queue();
                    } else {
-                       event.getChannel().sendMessage("Error finding user.").queue();
+                       event.getChannel().sendMessage(Text.USER_NOTFOUND.getMessage()).queue();
                    }
                 });
             } else {
-                event.getChannel().sendMessage("Error finding user.").queue();
+                event.getChannel().sendMessage(Text.USER_NOTFOUND.getMessage()).queue();
             }
         }
     }
@@ -48,7 +49,7 @@ public class InfoCommand extends Command {
         us.unfamousthomas.apexnerve.api.objects.user.User userObject = UserManager.getInstance().getUserByMember(member, user.getName());
         builder.setTitle(user.getName() + " - PROFILE");
         builder.setColor(Color.WHITE);
-        builder.setFooter("ATM6SMP BOT");
+        builder.setFooter(Text.BOT_FOOTER.getMessage());
         if(userObject.checkInTeam(member.getGuild())) {
             builder.addField("Team", userObject.getTeamName(member.getGuild()), false);
         }

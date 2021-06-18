@@ -2,6 +2,7 @@ package us.unfamousthomas.apexnerve.commands.team;
 
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import us.unfamousthomas.apexnerve.api.Text;
 import us.unfamousthomas.apexnerve.api.commands.Command;
 import us.unfamousthomas.apexnerve.api.commands.CustomPermission;
 import us.unfamousthomas.apexnerve.api.objects.teams.TeamManager;
@@ -26,7 +27,7 @@ public class TeamRenameCommand extends Command {
         if(team != null) {
             TeamManager.getInstance().renameTeam(newName, team, m);
         } else {
-            event.getTextChannel().sendMessage("Could not find a team with you as leader.").queue();
+            event.getTextChannel().sendMessage(Text.YOUR_TEAM_LEADER_NOTFOUND.getMessage()).queue();
         }
     }
 }

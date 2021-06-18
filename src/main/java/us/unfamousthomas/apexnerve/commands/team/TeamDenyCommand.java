@@ -2,6 +2,7 @@ package us.unfamousthomas.apexnerve.commands.team;
 
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import us.unfamousthomas.apexnerve.api.Text;
 import us.unfamousthomas.apexnerve.api.commands.Command;
 import us.unfamousthomas.apexnerve.api.commands.CustomPermission;
 import us.unfamousthomas.apexnerve.api.objects.teams.InviteObject;
@@ -26,7 +27,7 @@ public class TeamDenyCommand extends Command {
             Long id = Long.parseLong(args.get(0));
             deny(m, event, id);
         } catch (NumberFormatException ignore) {
-            event.getTextChannel().sendMessage("Invalid ID.").queue();
+            event.getTextChannel().sendMessage(Text.NUMBER_FORMAT_ERROR.getMessage()).queue();
         }
     }
 
@@ -35,19 +36,19 @@ public class TeamDenyCommand extends Command {
         InviteObject invite = TeamManager.getInstance().getInviteFromGuildByLeaderId(id, m.getIdLong(), m.getGuild());
 
         if (invite == null) {
-            e.getTextChannel().sendMessage("Could not find invite.").queue();
+            e.getTextChannel().sendMessage(Text.INVITE_NOT_FOUND.getMessage()).queue();
             return;
         }
 
         if(!invite.isActive()) {
-            e.getTextChannel().sendMessage("Invite is no longer active.").queue();
+            e.getTextChannel().sendMessage(Text.INVITE_NOT_ACTIVE.getMessage()).queue();
             return;
         }
 
         TeamObject team = TeamManager.getInstance().getTeamLeaderOfById(id, m.getGuild());
 
         if (team == null) {
-            e.getTextChannel().sendMessage("Team for ID not found.").queue();
+            e.getTextChannel().sendMessage(Text.TEAM_NOTFOUND.getMessage()).queue();
             return;
         }
 

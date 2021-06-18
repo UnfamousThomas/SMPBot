@@ -4,6 +4,7 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import us.unfamousthomas.apexnerve.api.Text;
 import us.unfamousthomas.apexnerve.api.commands.Command;
 import us.unfamousthomas.apexnerve.api.commands.CustomPermission;
 import us.unfamousthomas.apexnerve.api.objects.teams.TeamManager;
@@ -48,9 +49,9 @@ public class TeamCreateCommand extends Command {
             }
             TeamManager.getInstance().createTeam(m, realColor, name, guild);
 
-            channel.sendMessage("Created team: " + name).queue();
+            channel.sendMessage(Text.TEAM_CREATED.getReplaced("%name", name)).queue();
         } else {
-            channel.sendMessage("You are already in a team.").queue();
+            channel.sendMessage(Text.ALREADY_IN_TEAM.getMessage()).queue();
         }
     }
 

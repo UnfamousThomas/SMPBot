@@ -2,6 +2,7 @@ package us.unfamousthomas.apexnerve.commands.team;
 
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import us.unfamousthomas.apexnerve.api.Text;
 import us.unfamousthomas.apexnerve.api.commands.Command;
 import us.unfamousthomas.apexnerve.api.commands.CustomPermission;
 import us.unfamousthomas.apexnerve.api.objects.teams.TeamManager;
@@ -32,7 +33,7 @@ public class TeamRecolorCommand extends Command {
         TeamObject team = TeamManager.getInstance().getTeamLeaderOf(m);
 
         if(team == null) {
-            event.getTextChannel().sendMessage("Could not find you as a leader of a team.").queue();
+            event.getTextChannel().sendMessage(Text.YOUR_TEAM_LEADER_NOTFOUND.getMessage()).queue();
             return;
         }
          TeamManager.getInstance().recolorTeam(realColor, team, m);

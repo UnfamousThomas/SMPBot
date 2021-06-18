@@ -5,6 +5,7 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import us.unfamousthomas.apexnerve.api.Text;
 import us.unfamousthomas.apexnerve.api.commands.Category;
 import us.unfamousthomas.apexnerve.api.commands.Command;
 import us.unfamousthomas.apexnerve.api.commands.CustomPermission;
@@ -41,7 +42,7 @@ public class TeamCommand extends Command {
     public void run(Member m, List<String> args, MessageReceivedEvent event) {
         TeamObject teamMemberOf = TeamManager.getInstance().getTeamMemberOf(m);
         if (teamMemberOf == null) {
-            event.getTextChannel().sendMessage("Not member of any team").queue();
+            event.getTextChannel().sendMessage(Text.YOUR_TEAM_NOTFOUND.getMessage()).queue();
         } else {
             sendEmbed(teamMemberOf, event.getGuild(), event.getTextChannel());
         }
@@ -53,7 +54,7 @@ public class TeamCommand extends Command {
         embedBuilder
                 .setColor(team.getColor())
                 .setTitle("Team Info")
-                .setFooter("ATM6 SMP")
+                .setFooter(Text.BOT_FOOTER.getMessage())
                 .addField("Team name", team.getName(), true);
 
         StringBuilder builder = new StringBuilder();

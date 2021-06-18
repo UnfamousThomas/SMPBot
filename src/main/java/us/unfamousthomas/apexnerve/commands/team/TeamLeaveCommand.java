@@ -3,6 +3,7 @@ package us.unfamousthomas.apexnerve.commands.team;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import us.unfamousthomas.apexnerve.api.Text;
 import us.unfamousthomas.apexnerve.api.commands.Command;
 import us.unfamousthomas.apexnerve.api.commands.CustomPermission;
 import us.unfamousthomas.apexnerve.api.objects.teams.TeamManager;
@@ -27,13 +28,13 @@ public class TeamLeaveCommand extends Command {
     private void leave(Member m, TextChannel textChannel) {
         TeamObject leaderOf = TeamManager.getInstance().getTeamLeaderOf(m);
         if(leaderOf != null) {
-            textChannel.sendMessage("You cannot leave your team as a leader. Please choose a new leader OR do !team delete.").queue();
+            textChannel.sendMessage(Text.LEADER_LEAVE_FAILURE.getMessage()).queue();
             return;
         }
         TeamObject teamObject = TeamManager.getInstance().getTeamMemberOf(m);
 
         if(teamObject == null) {
-            textChannel.sendMessage("Could not find you in any team!").queue();
+            textChannel.sendMessage(Text.YOUR_TEAM_NOTFOUND.getMessage()).queue();
             return;
         }
 

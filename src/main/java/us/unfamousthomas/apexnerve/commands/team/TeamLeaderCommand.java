@@ -2,6 +2,7 @@ package us.unfamousthomas.apexnerve.commands.team;
 
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import us.unfamousthomas.apexnerve.api.Text;
 import us.unfamousthomas.apexnerve.api.commands.Command;
 import us.unfamousthomas.apexnerve.api.commands.CustomPermission;
 import us.unfamousthomas.apexnerve.api.objects.teams.TeamManager;
@@ -22,17 +23,17 @@ public class TeamLeaderCommand extends Command {
         if(args.size() == 0) {
             TeamObject teamObject = TeamManager.getInstance().getTeamMemberOf(m);
             if(teamObject == null) {
-                event.getTextChannel().sendMessage("Could not find team.").queue();
+                event.getTextChannel().sendMessage(Text.TEAM_NOTFOUND.getMessage()).queue();
                 return;
             }
             event.getGuild().retrieveMemberById(teamObject.getLeaderId()).queue(leader -> {
-                event.getTextChannel().sendMessage("The leader of your team is: " + leader.getUser().getName()).queue();
+                event.getTextChannel().sendMessage(Text.LEADER_OF_TEAM.getReplaced("%name", leader.getUser().getName())).queue();
             });
         } else if(args.size() == 1) {
             TeamObject teamObject = TeamManager.getInstance().getTeamLeaderOf(m);
 
             if(teamObject == null) {
-                event.getTextChannel().sendMessage("You are not a leader of any team.").queue();
+                event.getTextChannel().sendMessage(Text.YOUR_TEAM_LEADER_NOTFOUND.getMessage()).queue();
                 return;
             }
 
@@ -41,14 +42,14 @@ public class TeamLeaderCommand extends Command {
                 TeamObject targetTeam = TeamManager.getInstance().getTeamMemberOf(target);
 
                 if(targetTeam != teamObject) {
-                    event.getTextChannel().sendMessage("User is not in your team.").queue();
+                    event.getTextChannel().sendMessage(Text.USER_NOT_IN_YOUR_TEAM.getMessage()).queue();
                     return;
                 }
 
                 TeamManager.getInstance().setNewLeader(m, target, teamObject);
-                event.getTextChannel().sendMessage("Success!").queue();
+                event.getTextChannel().sendMessage(Text.SUCCESSFUL.getMessage()).queue();
             } else {
-                event.getTextChannel().sendMessage("You can only set one member as leader.").queue();
+                event.getTextChannel().sendMessage(Text.MENTION_EXACTLY_ONE.getMessage()).queue();
             }
         }
     }

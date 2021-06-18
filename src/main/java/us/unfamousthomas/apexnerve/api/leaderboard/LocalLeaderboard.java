@@ -2,6 +2,7 @@ package us.unfamousthomas.apexnerve.api.leaderboard;
 
 import net.dv8tion.jda.api.entities.Guild;
 import org.apache.commons.math3.util.Precision;
+import us.unfamousthomas.apexnerve.api.Text;
 import us.unfamousthomas.apexnerve.api.objects.user.User;
 import us.unfamousthomas.apexnerve.api.objects.user.UserManager;
 
@@ -38,8 +39,7 @@ public class LocalLeaderboard {
             amount = userList.size();
         }
 
-        builder.append(guildName);
-        builder.append(" - Leaderboards:\n");
+        builder.append(Text.LOCAL_PREFIX.getReplaced("%guildname", guildName));
         while(amount >= i) {
             if(userList.get(i - 1).getTotalExperience() > 0) {
                 builder.append(i);

@@ -4,6 +4,7 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import us.unfamousthomas.apexnerve.api.Text;
 import us.unfamousthomas.apexnerve.api.commands.Command;
 import us.unfamousthomas.apexnerve.api.commands.CustomPermission;
 import us.unfamousthomas.apexnerve.api.objects.teams.TeamManager;
@@ -50,11 +51,11 @@ public class TeamDeleteCommand  extends Command {
             TeamObject teamObject = TeamManager.getInstance().getTeamLeaderOf(m);
 
             if (teamObject != null) {
-                channel.sendMessage("Team: " + teamObject.getName() + " has been deleted.").queue();
+                channel.sendMessage(Text.TEAM_DELETED.getReplaced("%name", teamObject.getName())).queue();
                 manager.deleteTeam(teamObject, guild);
 
             } else {
-                channel.sendMessage("You are not a teamleader.").queue();
+                channel.sendMessage(Text.YOUR_TEAM_LEADER_NOTFOUND.getMessage()).queue();
             }
         } else {
             channel.sendMessage("You are not in a team.").queue();

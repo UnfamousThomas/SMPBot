@@ -2,6 +2,7 @@ package us.unfamousthomas.apexnerve.commands.dev;
 
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import us.unfamousthomas.apexnerve.api.Text;
 import us.unfamousthomas.apexnerve.api.commands.Command;
 import us.unfamousthomas.apexnerve.api.commands.CustomPermission;
 
@@ -18,6 +19,7 @@ public class ShutdownCommand extends Command {
 
     @Override
     public void run(Member m, List<String> args, MessageReceivedEvent event) {
+        event.getTextChannel().sendMessage(Text.SUCCESSFUL.getMessage()).queue();
         event.getJDA().shutdown();
     }
 }

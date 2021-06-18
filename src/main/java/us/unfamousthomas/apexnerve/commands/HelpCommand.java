@@ -3,6 +3,7 @@ package us.unfamousthomas.apexnerve.commands;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import us.unfamousthomas.apexnerve.api.Text;
 import us.unfamousthomas.apexnerve.api.commands.Category;
 import us.unfamousthomas.apexnerve.api.commands.Command;
 import us.unfamousthomas.apexnerve.api.commands.CommandManager;
@@ -25,7 +26,7 @@ public class HelpCommand extends Command {
         if(args.size() == 0) {
             EmbedBuilder embed = new EmbedBuilder();
             embed.setTitle("Command help");
-            embed.setFooter("ATMP6SMP");
+            embed.setFooter(Text.BOT_FOOTER.getMessage());
 
             StringBuilder builder = new StringBuilder();
             CommandManager.getInstance().getCommands().forEach((s, command) -> {
@@ -45,7 +46,7 @@ public class HelpCommand extends Command {
         } else if(args.size() == 1) {
             Command command = CommandManager.getInstance().getCommands().get(args.get(0).toLowerCase());
             if(command == null) {
-                event.getChannel().sendMessage("Command was not found! Check your spelling.").queue();
+                event.getChannel().sendMessage(Text.COMMAND_NOTFOUND.getMessage()).queue();
                 return;
             }
             EmbedBuilder builder = new EmbedBuilder();

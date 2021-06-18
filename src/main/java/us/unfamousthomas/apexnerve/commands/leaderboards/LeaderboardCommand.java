@@ -2,6 +2,7 @@ package us.unfamousthomas.apexnerve.commands.leaderboards;
 
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import us.unfamousthomas.apexnerve.api.Text;
 import us.unfamousthomas.apexnerve.api.commands.Command;
 import us.unfamousthomas.apexnerve.api.commands.CustomPermission;
 import us.unfamousthomas.apexnerve.api.leaderboard.LocalLeaderboard;
@@ -33,7 +34,7 @@ public class LeaderboardCommand extends Command {
             if(num > 0) {
                 event.getChannel().sendMessage(new LocalLeaderboard(m.getGuild()).getLeaderBoards(num)).queue();
             } else {
-                event.getChannel().sendMessage("Error with number").queue();
+                event.getChannel().sendMessage(Text.NUMBER_FORMAT_ERROR.getMessage()).queue();
             }
         }
     }

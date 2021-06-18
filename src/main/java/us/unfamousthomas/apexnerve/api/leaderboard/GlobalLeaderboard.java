@@ -1,6 +1,7 @@
 package us.unfamousthomas.apexnerve.api.leaderboard;
 
 import org.apache.commons.math3.util.Precision;
+import us.unfamousthomas.apexnerve.api.Text;
 import us.unfamousthomas.apexnerve.api.objects.user.User;
 import us.unfamousthomas.apexnerve.api.objects.user.UserManager;
 
@@ -24,14 +25,14 @@ public class GlobalLeaderboard {
         int i = 1;
 
         if (amount > 100) {
-            builder.append("Too big to calculate.");
+            builder.append(Text.LEADERBOARD_TOO_BIG.getMessage());
             return builder.toString();
         }
         if (users.size() < amount) {
             amount = users.size();
         }
 
-        builder.append(" Global leaderboards:\n");
+        builder.append(Text.GLOBAL_PREFIX.getMessage());
         while (amount >= i) {
             if(users.get(i - 1).getTotalExperience() > 0) {
                 builder.append(i);

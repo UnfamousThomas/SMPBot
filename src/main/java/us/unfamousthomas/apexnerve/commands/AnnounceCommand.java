@@ -3,6 +3,7 @@ package us.unfamousthomas.apexnerve.commands;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import us.unfamousthomas.apexnerve.api.Text;
 import us.unfamousthomas.apexnerve.api.commands.Command;
 import us.unfamousthomas.apexnerve.api.commands.CustomPermission;
 
@@ -21,7 +22,7 @@ public class AnnounceCommand extends Command {
         event.getMessage().delete().queue();
         event.getTextChannel().sendMessage(buildEmbed(String.join(" ", args), m).build()).queue();
         m.getUser().openPrivateChannel().queue(pc -> {
-            pc.sendMessage("Announcement was made in channel: " + event.getTextChannel().getAsMention()).queue();
+            pc.sendMessage(Text.ANNOUNCEMENT_MADE.getReplaced("%channel", event.getTextChannel().getAsMention())).queue();
         });
     }
 

@@ -4,6 +4,7 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import us.unfamousthomas.apexnerve.api.Text;
 import us.unfamousthomas.apexnerve.api.commands.Command;
 import us.unfamousthomas.apexnerve.api.commands.CustomPermission;
 import us.unfamousthomas.apexnerve.api.objects.settings.GuildSettingsManager;
@@ -33,17 +34,17 @@ public class TeamInviteCommand extends Command {
 
 
         if(team == null) {
-            textChannel.sendMessage("Could not find you as leader of team").queue();
+            textChannel.sendMessage(Text.YOUR_TEAM_LEADER_NOTFOUND.getMessage()).queue();
             return;
         }
 
         if(team.getListOfMemberIds().size() == GuildSettingsManager.getInstance().getGuildSettings(m.getGuild().getIdLong()).getMaxTeam()) {
-            textChannel.sendMessage("Max member count already reached").queue();
+            textChannel.sendMessage(Text.MAX_MEMBERCOUNT.getReplaced("%count", String.valueOf(GuildSettingsManager.getInstance().getGuildSettings(m.getGuild().getIdLong()).getMaxTeam()))).queue();
             return;
         }
 
         if(message.getMentionedMembers().size() != 1) {
-            textChannel.sendMessage("Mentioned members size is not 1.").queue();
+            textChannel.sendMessage(Text.MENTION_EXACTLY_ONE.getMessage()).queue();
             return;
         }
 
@@ -51,7 +52,7 @@ public class TeamInviteCommand extends Command {
         TeamObject targetTeam = TeamManager.getInstance().getTeamMemberOf(target);
 
         if(targetTeam != null) {
-            textChannel.sendMessage("User is already part of a team").queue();
+            textChannel.sendMessage(Text.USER_PART_OF_TEAM.getMessage()).queue();
             return;
         }
 

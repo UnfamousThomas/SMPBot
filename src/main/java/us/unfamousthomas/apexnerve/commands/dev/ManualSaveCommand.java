@@ -2,6 +2,7 @@ package us.unfamousthomas.apexnerve.commands.dev;
 
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import us.unfamousthomas.apexnerve.api.Text;
 import us.unfamousthomas.apexnerve.api.commands.Command;
 import us.unfamousthomas.apexnerve.api.commands.CustomPermission;
 import us.unfamousthomas.apexnerve.api.objects.settings.GuildSettingsManager;
@@ -21,6 +22,6 @@ public class ManualSaveCommand extends Command {
         GuildSettingsManager.getInstance().saveAll();
         UserManager.getInstance().saveAll();
         TeamManager.getInstance().saveAll();
-        event.getTextChannel().sendMessage("Success!").queue();
+        event.getTextChannel().sendMessage(Text.SUCCESSFUL.getMessage()).queue();
     }
 }
