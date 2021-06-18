@@ -143,7 +143,14 @@ public class User implements Comparable<User> {
     }
 
     public void setTeam(TeamObject team) {
+        if(team == null) {
+            throw new NullPointerException();
+        }
         this.teamPerGuild.put(team.getGuildID(), team);
+    }
+
+    public void leaveTeam(Guild guild) {
+        this.teamPerGuild.remove(guild.getIdLong());
     }
 
     public TeamObject getTeam(Guild guild) {

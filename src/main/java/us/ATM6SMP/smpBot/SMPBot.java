@@ -39,9 +39,6 @@ public class SMPBot {
                     .setChunkingFilter(ChunkingFilter.ALL) // enable member chunking for all guilds
                     .enableIntents(GatewayIntent.GUILD_MEMBERS);
 
-
-            TeamManager.getInstance().load();
-
             CommandManager.init(builder);
             CommandManager.registerCommands(
                     new TestCommand(),
@@ -60,8 +57,9 @@ public class SMPBot {
             jda.addEventListener(new TextChannelListener());
             jda.addEventListener(new GuildLeaveJoinListener());
 
-            DataHandler.getInstance().addDevs();
+            TeamManager.getInstance().load();
 
+            DataHandler.getInstance().addDevs();
             Logger.log(Logger.Level.SUCCESS, "Bot started.");
 
         } catch (Exception ex) {

@@ -5,6 +5,7 @@ import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
 import us.ATM6SMP.smpBot.SMPBot;
 import us.ATM6SMP.smpBot.api.database.MongoManager;
+import us.ATM6SMP.smpBot.api.objects.user.User;
 import us.ATM6SMP.smpBot.api.objects.user.UserManager;
 
 import java.awt.*;
@@ -66,6 +67,7 @@ public class TeamManager {
         team.setName(name);
         team.setColor(color);
         team.addMember(member.getIdLong());
+        team.setGuildID(member.getGuild().getIdLong());
 
         createRole(team, guild, member);
 
@@ -90,7 +92,6 @@ public class TeamManager {
                     textChannel.createPermissionOverride(role).setAllow(Permission.VIEW_CHANNEL).queue();
                     textChannel.createPermissionOverride(guild.getPublicRole()).setDeny(Permission.VIEW_CHANNEL).queue();
                     team.setTeamChatChannelId(textChannel.getIdLong());
-                    saveTeam(team, leader);
                 });
 
         guild.createVoiceChannel(team.getName() + "-" + "voice", guild.getCategoryById("840138217894576138"))
@@ -98,22 +99,44 @@ public class TeamManager {
                     voiceChannel.createPermissionOverride(role).setAllow(Permission.VIEW_CHANNEL).queue();
                     voiceChannel.createPermissionOverride(guild.getPublicRole()).setDeny(Permission.VIEW_CHANNEL).queue();
                     team.setTeamVoiceChannelId(voiceChannel.getIdLong());
-                    saveTeam(team, leader);
 
 
                 });
 
         saveTeam(team, leader);
 
+        User user = UserManager.getInstance().getUserByMember(leader ,leader.getUser().getName());
+        user.setTeam(team);
+        SMPBot.getMongoManager().getUserDAO().save(user);
     }
 
     private void saveTeam(TeamObject team, Member leader) {
-        removeTeam(team, leader.getGuild());
+        checkEmptyTeam(leader.getGuild());
+
+        if(teamsMap.get(leader.getGuild().getIdLong()).contains(team)) {
+            removeTeam(team, leader.getGuild());
+        }
         mongoManager.getTeamDAO().save(team);
-        UserManager.getInstance().getUserByMember(leader, leader.getUser().getName()).setTeam(team);
         addTeam(team, leader.getGuild());
 
     }
+
+    private void checkEmptyTeam(Guild guild) {
+        if(!teamsMap.containsKey(guild.getIdLong())) {
+            ArrayList<TeamObject> list = new ArrayList<>();
+
+            teamsMap.put(guild.getIdLong(), list);
+        }
+    }
+
+    private void checkEmptyInvite(Guild guild) {
+        if(!invitesMap.containsKey(guild.getIdLong())) {
+            ArrayList<InviteObject> list = new ArrayList<>();
+
+            invitesMap.put(guild.getIdLong(), list);
+        }
+    }
+
 
     public void deleteTeam(TeamObject team, Guild guild) {
         removeTeam(team, guild);
@@ -203,7 +226,7 @@ public class TeamManager {
         mongoManager.getTeamDAO().save(leftTeam);
         leaving.getGuild().removeRoleFromMember(leaving.getUser().getIdLong(), leaving.getGuild().getRoleById(leftTeam.getRoleID())).queue();
 
-        UserManager.getInstance().getUserByMember(leaving, leaving.getUser().getName()).setTeam(null);
+        UserManager.getInstance().getUserByMember(leaving, leaving.getUser().getName()).leaveTeam(leaving.getGuild());
 
     }
 
@@ -216,7 +239,7 @@ public class TeamManager {
         mongoManager.getTeamDAO().save(leftTeam);
         leaving.getGuild().removeRoleFromMember(leaving.getUser().getIdLong(), leaving.getGuild().getRoleById(leftTeam.getRoleID())).queue();
 
-        UserManager.getInstance().getUserByMember(leaving, leaving.getUser().getName()).setTeam(null);
+        UserManager.getInstance().getUserByMember(leaving, leaving.getUser().getName()).leaveTeam(leaving.getGuild());
 
         leaving.getUser().openPrivateChannel().queue(privateChannel -> {
             privateChannel.sendMessage("You have been kicked from the team " + leftTeam.getName()).queue();
@@ -288,6 +311,7 @@ public class TeamManager {
     }
 
     private void removeTeam(TeamObject team, Guild guild) {
+        checkEmptyTeam(guild);
         ArrayList<TeamObject> teams = teamsMap.get(guild.getIdLong());
 
         teams.remove(team);
@@ -296,6 +320,7 @@ public class TeamManager {
     }
 
     private void addTeam(TeamObject team, Guild guild) {
+        checkEmptyTeam(guild);
         ArrayList<TeamObject> teams = teamsMap.get(guild.getIdLong());
 
         teams.add(team);
@@ -304,6 +329,7 @@ public class TeamManager {
     }
 
     private void removeInvite(InviteObject invite, Guild guild) {
+        checkEmptyInvite(guild);
         ArrayList<InviteObject> invites = invitesMap.get(guild.getIdLong());
 
         invites.remove(invite);
@@ -312,6 +338,7 @@ public class TeamManager {
     }
 
     private void addInvite(InviteObject invite, Guild guild) {
+        checkEmptyInvite(guild);
         ArrayList<InviteObject> invites = invitesMap.get(guild.getIdLong());
 
         invites.add(invite);
@@ -332,7 +359,11 @@ public class TeamManager {
     }
 
     public InviteObject getInviteFromGuildByLeaderId(long leaderId, long userId, Guild guild) {
+        checkEmptyInvite(guild);
         InviteObject invite = null;
+        if(!invitesMap.containsKey(guild.getIdLong())) {
+            return invite;
+        }
         for (InviteObject inviteObject : getInviteFromGuild(guild.getIdLong())) {
             if(inviteObject.getMemberSentFrom() == leaderId && userId == inviteObject.getMemberSentTo()) {
                 invite = inviteObject;

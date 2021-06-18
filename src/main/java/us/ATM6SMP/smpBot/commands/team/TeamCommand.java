@@ -31,7 +31,8 @@ public class TeamCommand extends Command {
                 new TeamLeaveCommand(),
                 new TeamKickCommand(),
                 new TeamRenameCommand(),
-                new TeamRecolorCommand()
+                new TeamRecolorCommand(),
+                new TeamLeaderCommand()
         );
 
     }

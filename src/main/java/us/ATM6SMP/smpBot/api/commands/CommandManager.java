@@ -43,6 +43,8 @@ public class CommandManager extends ListenerAdapter {
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
         //if (DataFields.blacklistedPeopleList.get(event.getAuthor().getIdLong()) != null) return;
+        if(event.getAuthor().isBot()) return;
+        if(!event.getChannelType().isGuild()) return;
         String prefix = GuildSettingsManager.getInstance().getGuildSettings(event.getGuild().getIdLong()).getPrefix();
 
         String[] argArray = event.getMessage().getContentRaw().split("\\s+");
