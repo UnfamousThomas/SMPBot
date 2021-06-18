@@ -21,18 +21,12 @@ public class TeamRenameCommand extends Command {
     public void run(Member m, List<String> args, MessageReceivedEvent event) {
         String newName = String.join(" ", args);
 
-        TeamObject team = null;
-
-        for (TeamObject teamObject : TeamManager.getInstance().getTeams()) {
-            if(teamObject.getLeaderId() == m.getIdLong()) {
-                team = teamObject;
-            }
-        }
+        TeamObject team = TeamManager.getInstance().getTeamLeaderOf(m);
 
         if(team != null) {
             TeamManager.getInstance().renameTeam(newName, team, m);
         } else {
-            event.getTextChannel().sendMessage("Could not find team with you as leader.").queue();
+            event.getTextChannel().sendMessage("Could not find a team with you as leader.").queue();
         }
     }
 }

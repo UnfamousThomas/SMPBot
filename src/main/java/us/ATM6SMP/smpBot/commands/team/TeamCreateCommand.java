@@ -7,6 +7,7 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import us.ATM6SMP.smpBot.api.commands.Command;
 import us.ATM6SMP.smpBot.api.commands.CustomPermission;
 import us.ATM6SMP.smpBot.api.objects.teams.TeamManager;
+import us.ATM6SMP.smpBot.api.objects.teams.TeamObject;
 
 import java.awt.*;
 import java.lang.reflect.Field;
@@ -25,16 +26,14 @@ public class TeamCreateCommand extends Command {
 
     @Override
     public void run(Member m, List<String> args, MessageReceivedEvent event) {
-        final boolean[] isInTeam = {false};
+        boolean isInTeam = false;
 
-        manager.getTeams().forEach(teamObject -> {
-            teamObject.getListOfMemberIds().forEach(member -> {
-                if (member == m.getIdLong()) {
-                    isInTeam[0] = true;
-                }
-            });
-        });
-        create(isInTeam[0], args.get(0), getName(args), event.getMember(), event.getGuild(), event.getTextChannel());
+        TeamObject teamObject = TeamManager.getInstance().getTeamMemberOf(m);
+        if(teamObject != null) {
+            isInTeam = true;
+        }
+
+        create(isInTeam, args.get(0), getName(args), event.getMember(), event.getGuild(), event.getTextChannel());
 
 
     }

@@ -25,24 +25,19 @@ public class TeamLeaveCommand extends Command {
     }
 
     private void leave(Member m, TextChannel textChannel) {
-        final TeamObject[] teamToLeave = {null};
-        TeamManager.getInstance().getTeams().forEach(teamObject -> {
-            if(teamObject.getLeaderId() == m.getUser().getIdLong()) {
-                textChannel.sendMessage("You cannot leave your team as a leader. Please choose a new leader OR do !team delete.").queue();
-                return;
-            }
+        TeamObject leaderOf = TeamManager.getInstance().getTeamLeaderOf(m);
+        if(leaderOf != null) {
+            textChannel.sendMessage("You cannot leave your team as a leader. Please choose a new leader OR do !team delete.").queue();
+            return;
+        }
+        TeamObject teamObject = TeamManager.getInstance().getTeamMemberOf(m);
 
-            if(teamObject.getListOfMemberIds().contains(m.getUser().getIdLong())) {
-                teamToLeave[0] = teamObject;
-            }
-        });
-
-        if(teamToLeave[0] == null) {
+        if(teamObject == null) {
             textChannel.sendMessage("Could not find you in any team!").queue();
             return;
         }
 
-        TeamManager.getInstance().leaveTeam(m, teamToLeave[0]);
+        TeamManager.getInstance().leaveTeam(m, teamObject);
     }
 
 }

@@ -49,8 +49,8 @@ public class InfoCommand extends Command {
         builder.setTitle(user.getName() + " - PROFILE");
         builder.setColor(Color.WHITE);
         builder.setFooter("ATM6SMP BOT");
-        if(userObject.checkInTeam()) {
-            builder.addField("Team", userObject.getTeamName(), false);
+        if(userObject.checkInTeam(member.getGuild())) {
+            builder.addField("Team", userObject.getTeamName(member.getGuild()), false);
         }
         builder.addField("Level", String.valueOf(userObject.getLevel()), true);
         builder.addField("Experience", String.valueOf(userObject.currentExperienceText()), true);

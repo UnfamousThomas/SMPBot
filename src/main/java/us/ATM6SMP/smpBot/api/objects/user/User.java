@@ -1,5 +1,6 @@
 package us.ATM6SMP.smpBot.api.objects.user;
 
+import net.dv8tion.jda.api.entities.Guild;
 import org.apache.commons.math3.util.Precision;
 import org.bson.types.ObjectId;
 import org.jetbrains.annotations.NotNull;
@@ -9,6 +10,7 @@ import us.ATM6SMP.smpBot.api.LevelUtils;
 import us.ATM6SMP.smpBot.api.objects.teams.TeamObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 @Entity(value="users", noClassnameStored = true)
 public class User implements Comparable<User> {
@@ -28,7 +30,7 @@ public class User implements Comparable<User> {
     private int level = 0;
 
     @Reference
-    private TeamObject team;
+    private HashMap<Long, TeamObject> teamPerGuild = new HashMap<>();
 
 
     public void setDiscordId(long discordId) {
@@ -141,23 +143,23 @@ public class User implements Comparable<User> {
     }
 
     public void setTeam(TeamObject team) {
-        this.team = team;
+        this.teamPerGuild.put(team.getGuildID(), team);
     }
 
-    public TeamObject getTeam() {
-        return team;
+    public TeamObject getTeam(Guild guild) {
+        return teamPerGuild.getOrDefault(guild.getIdLong(), null);
     }
 
-    public String getTeamName() {
-        if(getTeam() != null) {
-            return getTeam().getName();
+    public String getTeamName(Guild guild) {
+        if(getTeam(guild) != null) {
+            return getTeam(guild).getName();
         } else {
             return "Not in a team";
         }
     }
 
-    public boolean checkInTeam() {
-        if(getTeam() != null) {
+    public boolean checkInTeam(Guild guild) {
+        if(getTeam(guild) != null) {
             return true;
         } else {
             return false;

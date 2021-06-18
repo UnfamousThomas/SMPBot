@@ -9,14 +9,17 @@ import us.ATM6SMP.smpBot.api.objects.user.UserManager;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 public class TeamManager {
     public static TeamManager instance;
     MongoManager mongoManager = SMPBot.getMongoManager();
-    ArrayList<TeamObject> teams = new ArrayList<>();
+    //ArrayList<TeamObject> teams = new ArrayList<>();
     ArrayList<InviteObject> invites = new ArrayList<>();
+    Map<Long, ArrayList<TeamObject>> teamsMap = new HashMap<>();
 
     public static TeamManager getInstance() {
         if (instance == null) {
@@ -27,8 +30,19 @@ public class TeamManager {
 
     public void load() {
         List<TeamObject> teamsLoaded = SMPBot.getMongoManager().getTeamDAO().find().asList();
-        teams.addAll(teamsLoaded);
+        for (TeamObject teamObject : teamsLoaded) {
+            if(teamsMap.containsKey(teamObject.getGuildID())) {
+                ArrayList<TeamObject> teamListForGuild = teamsMap.get(teamObject.getGuildID());
+                teamListForGuild.add(teamObject);
 
+                teamsMap.put(teamObject.getGuildID(), teamListForGuild);
+            } else {
+                ArrayList<TeamObject> teamListForGuild = new ArrayList<>();
+                teamListForGuild.add(teamObject);
+
+                teamsMap.put(teamObject.getGuildID(), teamListForGuild);
+            }
+        }
         List<InviteObject> invitesLoaded = SMPBot.getMongoManager().getInviteDAO().find().asList();
         invites.addAll(invitesLoaded);
     }
@@ -81,16 +95,16 @@ public class TeamManager {
     }
 
     private void saveTeam(TeamObject team, Member leader) {
-        teams.remove(team);
+        removeTeam(team, leader.getGuild());
         mongoManager.getTeamDAO().save(team);
         UserManager.getInstance().getUserByMember(leader, leader.getUser().getName()).setTeam(team);
-        teams.add(team);
+        addTeam(team, leader.getGuild());
 
     }
 
     public void deleteTeam(TeamObject team, Guild guild) {
-        teams.remove(team);
 
+        removeTeam(team, guild);
         TextChannel textChannel = guild.getTextChannelById(team.getTeamChatChannelId());
         VoiceChannel voiceChannel = guild.getVoiceChannelById(team.getTeamVoiceChannelId());
         Role role = guild.getRoleById(team.getRoleID());
@@ -122,9 +136,9 @@ public class TeamManager {
         mongoManager.getInviteDAO().save(newInvite);
         invites.add(newInvite);
 
-        teams.remove(team);
+        removeTeam(team, member.getGuild());
         team.addInvite(newInvite);
-        teams.add(team);
+        addTeam(team, member.getGuild());
         mongoManager.getTeamDAO().save(team);
 
         sendMessage(member, team, member.getGuild());
@@ -159,9 +173,9 @@ public class TeamManager {
         invites.add(inviteObject);
         mongoManager.getInviteDAO().save(inviteObject);
 
-        teams.remove(joinedTeam);
+        removeTeam(joinedTeam, joining.getGuild());
         joinedTeam.addMember(joining.getUser().getIdLong());
-        teams.add(joinedTeam);
+        addTeam(joinedTeam, joining.getGuild());
         mongoManager.getTeamDAO().save(joinedTeam);
         joining.getGuild().addRoleToMember(joining.getUser().getIdLong(), joining.getGuild().getRoleById(joinedTeam.getRoleID())).queue();
 
@@ -171,9 +185,9 @@ public class TeamManager {
     public void leaveTeam(Member leaving, TeamObject leftTeam) {
         leaving.getGuild().getTextChannelById(leftTeam.getTeamChatChannelId()).sendMessage(leaving.getEffectiveName() + " has left the team!").queue();
 
-        teams.remove(leftTeam);
+        removeTeam(leftTeam, leaving.getGuild());
         leftTeam.removeMember(leaving.getUser().getIdLong());
-        teams.add(leftTeam);
+        addTeam(leftTeam, leaving.getGuild());
         mongoManager.getTeamDAO().save(leftTeam);
         leaving.getGuild().removeRoleFromMember(leaving.getUser().getIdLong(), leaving.getGuild().getRoleById(leftTeam.getRoleID())).queue();
 
@@ -184,9 +198,9 @@ public class TeamManager {
     public void kickTeam(Member leaving, TeamObject leftTeam) {
         leaving.getGuild().getTextChannelById(leftTeam.getTeamChatChannelId()).sendMessage(leaving.getEffectiveName() + " has been kicked from the team!").queue();
 
-        teams.remove(leftTeam);
+        removeTeam(leftTeam, leaving.getGuild());
         leftTeam.removeMember(leaving.getUser().getIdLong());
-        teams.add(leftTeam);
+        addTeam(leftTeam, leaving.getGuild());
         mongoManager.getTeamDAO().save(leftTeam);
         leaving.getGuild().removeRoleFromMember(leaving.getUser().getIdLong(), leaving.getGuild().getRoleById(leftTeam.getRoleID())).queue();
 
@@ -200,7 +214,7 @@ public class TeamManager {
 
     public void renameTeam(String newName, TeamObject team, Member leader) {
         Guild guild = leader.getGuild();
-        teams.remove(team);
+        removeTeam(team, leader.getGuild());
 
         //set new team name
         team.setName(newName);
@@ -212,21 +226,29 @@ public class TeamManager {
         guild.getVoiceChannelById(team.getTeamVoiceChannelId()).getManager().setName(newName +"-voice").queue();
 
         mongoManager.getTeamDAO().save(team);
-        teams.add(team);
+        addTeam(team, leader.getGuild());
         guild.getTextChannelById(team.getTeamChatChannelId()).sendMessage("Team has been renamed to: " + newName).queue();
 
     }
 
+    public void setNewLeader(Member currentLeader, Member newLeader, TeamObject team) {
+        removeTeam(team, currentLeader.getGuild());
+        team.setLeaderId(newLeader.getIdLong());
+        addTeam(team, newLeader.getGuild());
+
+        SMPBot.getMongoManager().getTeamDAO().save(team);
+    }
+
     public void recolorTeam(Color color, TeamObject teamObject, Member leader) {
         Guild guild = leader.getGuild();
-        teams.remove(teamObject);
+        removeTeam(teamObject, leader.getGuild());
 
         teamObject.setColor(color);
 
         guild.getRoleById(teamObject.getRoleID()).getManager().setColor(color).queue();
 
         mongoManager.getTeamDAO().save(teamObject);
-        teams.add(teamObject);
+        removeTeam(teamObject, leader.getGuild());
 
         guild.getTextChannelById(teamObject.getTeamChatChannelId()).sendMessage("Team color has been changed.").queue();
     }
@@ -240,11 +262,43 @@ public class TeamManager {
         mongoManager.getInviteDAO().save(invite);
     }
 
-    public ArrayList<TeamObject> getTeams() {
-        return teams;
+    public ArrayList<TeamObject> getTeams(Guild guild) {
+        return teamsMap.get(guild);
     }
 
     public ArrayList<InviteObject> getInvites() {
         return invites;
+    }
+
+    private void removeTeam(TeamObject team, Guild guild) {
+        ArrayList<TeamObject> teams = teamsMap.get(guild.getIdLong());
+
+        teams.remove(team);
+
+        teamsMap.put(guild.getIdLong(), teams);
+    }
+
+    private void addTeam(TeamObject team, Guild guild) {
+        ArrayList<TeamObject> teams = teamsMap.get(guild.getIdLong());
+
+        teams.add(team);
+
+        teamsMap.put(guild.getIdLong(), teams);
+    }
+
+    public TeamObject getTeamMemberOf(Member searching) {
+        return UserManager.getInstance().getUserByMember(searching, searching.getUser().getName()).getTeam(searching.getGuild());
+    }
+
+    public TeamObject getTeamLeaderOf(Member searching) {
+        TeamObject team = getTeamMemberOf(searching);
+
+        if(team != null) {
+            if(team.getLeaderId() == searching.getIdLong()) {
+                return team;
+            }
+        }
+
+        return null;
     }
 }

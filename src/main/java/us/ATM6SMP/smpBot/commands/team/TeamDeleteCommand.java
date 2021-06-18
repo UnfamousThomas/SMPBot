@@ -7,6 +7,7 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import us.ATM6SMP.smpBot.api.commands.Command;
 import us.ATM6SMP.smpBot.api.commands.CustomPermission;
 import us.ATM6SMP.smpBot.api.objects.teams.TeamManager;
+import us.ATM6SMP.smpBot.api.objects.teams.TeamObject;
 
 import java.util.List;
 
@@ -27,18 +28,15 @@ public class TeamDeleteCommand  extends Command {
 
     @Override
     public void run(Member m, List<String> args, MessageReceivedEvent event) {
-        TeamManager manager = TeamManager.getInstance();
-        final boolean[] isInTeam = {false};
 
-        manager.getTeams().forEach(teamObject -> {
-            teamObject.getListOfMemberIds().forEach(member -> {
-                if (member == m.getIdLong()) {
-                    isInTeam[0] = true;
-                }
-            });
-        });
+        boolean isInTeam = false;
 
-        delete(isInTeam[0],event.getGuild(), event.getMember(), event.getTextChannel());
+        TeamObject teamObject = TeamManager.getInstance().getTeamMemberOf(m);
+        if(teamObject != null) {
+            isInTeam = true;
+        }
+
+        delete(isInTeam,event.getGuild(), event.getMember(), event.getTextChannel());
 
 
 
@@ -48,17 +46,12 @@ public class TeamDeleteCommand  extends Command {
         TeamManager manager = TeamManager.getInstance();
 
         if (inTeam) {
-            final int[] index = new int[1];
-            final boolean[] found = new boolean[1];
-            manager.getTeams().forEach(team -> {
-                if (team.getLeaderId() == m.getIdLong()) {
-                    index[0] = manager.getTeams().indexOf(team);
-                    found[0] = true;
-                }
-            });
-            if (found[0]) {
-                channel.sendMessage("Team: " + manager.getTeams().get(index[0]).getName() + " has been deleted.").queue();
-                manager.deleteTeam(manager.getTeams().get(index[0]), guild);
+
+            TeamObject teamObject = TeamManager.getInstance().getTeamLeaderOf(m);
+
+            if (teamObject != null) {
+                channel.sendMessage("Team: " + teamObject.getName() + " has been deleted.").queue();
+                manager.deleteTeam(teamObject, guild);
 
             } else {
                 channel.sendMessage("You are not a teamleader.").queue();

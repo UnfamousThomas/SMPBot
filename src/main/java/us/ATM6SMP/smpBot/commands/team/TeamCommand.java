@@ -38,16 +38,11 @@ public class TeamCommand extends Command {
 
     @Override
     public void run(Member m, List<String> args, MessageReceivedEvent event) {
-        final TeamObject[] teamMemberOf = new TeamObject[1];
-        TeamManager.getInstance().getTeams().forEach(team -> {
-            if (team.getListOfMemberIds().contains(m.getIdLong())) {
-                teamMemberOf[0] = team;
-            }
-        });
-        if (teamMemberOf[0] == null) {
+        TeamObject teamMemberOf = TeamManager.getInstance().getTeamMemberOf(m);
+        if (teamMemberOf == null) {
             event.getTextChannel().sendMessage("Not member of any team").queue();
         } else {
-            sendEmbed(teamMemberOf[0], event.getGuild(), event.getTextChannel());
+            sendEmbed(teamMemberOf, event.getGuild(), event.getTextChannel());
         }
 
     }

@@ -19,6 +19,8 @@ public class TeamObject {
 
     private long roleID;
 
+    private long guildID;
+
     @Indexed
     private String name;
     private int color;
@@ -107,5 +109,13 @@ public class TeamObject {
 
     public void removeMember(Long member) {
         this.listOfMemberIds.remove(member);
+    }
+
+    public void setGuildID(long guildID) {
+        this.guildID = guildID;
+    }
+
+    public long getGuildID() {
+        return guildID;
     }
 }

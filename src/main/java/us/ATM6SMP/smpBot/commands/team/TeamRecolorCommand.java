@@ -29,19 +29,13 @@ public class TeamRecolorCommand extends Command {
             realColor = getColor(color);
         }
 
-        TeamObject team = null;
+        TeamObject team = TeamManager.getInstance().getTeamLeaderOf(m);
 
-        for (TeamObject teamObject : TeamManager.getInstance().getTeams()) {
-           if(teamObject.getLeaderId() == m.getIdLong()) {
-               team = teamObject;
-           }
+        if(team == null) {
+            event.getTextChannel().sendMessage("Could not find you as a leader of a team.").queue();
         }
+         TeamManager.getInstance().recolorTeam(realColor, team, m);
 
-        if(team != null) {
-            TeamManager.getInstance().recolorTeam(realColor, team, m);
-        } else {
-            event.getTextChannel().sendMessage("Error finding team.").queue();
-        }
     }
 
     private Color getColor(String possibleColor) {
