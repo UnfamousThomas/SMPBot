@@ -6,7 +6,6 @@ import us.ATM6SMP.smpBot.api.commands.Command;
 import us.ATM6SMP.smpBot.api.commands.CustomPermission;
 import us.ATM6SMP.smpBot.api.objects.teams.TeamManager;
 import us.ATM6SMP.smpBot.api.objects.teams.TeamObject;
-import us.ATM6SMP.smpBot.api.objects.user.UserManager;
 
 import java.util.List;
 

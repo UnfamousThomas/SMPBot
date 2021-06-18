@@ -10,10 +10,10 @@ import org.mongodb.morphia.annotations.Indexed;
 public class GuildSettings {
 
     @Id
-    ObjectId id;
+    private ObjectId id;
 
     @Indexed(options = @IndexOptions(unique = true))
-    Long guildId;
+    private Long guildId;
 
     private String prefix = "!";
     private int maxTeam = 3;
@@ -38,5 +38,9 @@ public class GuildSettings {
 
     public void setGuildId(Long guildId) {
         this.guildId = guildId;
+    }
+
+    public Long getGuildId() {
+        return guildId;
     }
 }

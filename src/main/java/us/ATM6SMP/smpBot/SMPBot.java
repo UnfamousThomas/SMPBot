@@ -9,13 +9,15 @@ import us.ATM6SMP.smpBot.api.DataHandler;
 import us.ATM6SMP.smpBot.api.Logger;
 import us.ATM6SMP.smpBot.api.commands.CommandManager;
 import us.ATM6SMP.smpBot.api.database.MongoManager;
+import us.ATM6SMP.smpBot.api.objects.settings.GuildSettingsManager;
 import us.ATM6SMP.smpBot.api.objects.teams.TeamManager;
 import us.ATM6SMP.smpBot.api.objects.user.UserManager;
 import us.ATM6SMP.smpBot.commands.AnnounceCommand;
 import us.ATM6SMP.smpBot.commands.HelpCommand;
 import us.ATM6SMP.smpBot.commands.InfoCommand;
-import us.ATM6SMP.smpBot.commands.leaderboards.LeaderboardCommand;
+import us.ATM6SMP.smpBot.commands.dev.ManualSaveCommand;
 import us.ATM6SMP.smpBot.commands.dev.ShutdownCommand;
+import us.ATM6SMP.smpBot.commands.leaderboards.LeaderboardCommand;
 import us.ATM6SMP.smpBot.commands.team.TeamCommand;
 import us.ATM6SMP.smpBot.commands.test.TestCommand;
 import us.ATM6SMP.smpBot.listeners.GuildLeaveJoinListener;
@@ -47,7 +49,8 @@ public class SMPBot {
                     new ShutdownCommand(),
                     new InfoCommand(),
                     new AnnounceCommand(),
-                    new LeaderboardCommand()
+                    new LeaderboardCommand(),
+                    new ManualSaveCommand()
             );
 
 
@@ -57,7 +60,7 @@ public class SMPBot {
             jda.addEventListener(new TextChannelListener());
             jda.addEventListener(new GuildLeaveJoinListener());
 
-            TeamManager.getInstance().load();
+            loadManagers();
 
             DataHandler.getInstance().addDevs();
             Logger.log(Logger.Level.SUCCESS, "Bot started.");
@@ -73,5 +76,10 @@ public class SMPBot {
 
     public static JDA getJDA() {
         return jda;
+    }
+
+    private static void loadManagers() {
+        TeamManager.getInstance().load();
+        GuildSettingsManager.getInstance().load();
     }
 }

@@ -52,6 +52,11 @@ public abstract class Command {
         }
 
         TextChannel textChannel = event.getTextChannel();
+
+        if(permission == null) {
+            textChannel.sendMessage("Internal error: permission not set.").queue();
+            return;
+        }
         if (permission == CustomPermission.DEV || permission == CustomPermission.BOTHELPER) {
             if (permission == CustomPermission.DEV) {
                 if (!dataHandler.getDev().contains(event.getAuthor().getId())) {

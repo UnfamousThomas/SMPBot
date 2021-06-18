@@ -9,12 +9,13 @@ import us.ATM6SMP.smpBot.api.tasks.SaveUsersTaskTimer;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Timer;
 
 public class UserManager extends ListenerAdapter {
     private static HashMap<Long, User> users = new HashMap<>();
 
-    public static UserManager instance;
+    private static UserManager instance;
 
     public static UserManager getInstance() {
         if (instance == null) {
@@ -84,5 +85,13 @@ public class UserManager extends ListenerAdapter {
 
     public HashMap<Long, User> getUsers() {
         return users;
+    }
+
+    public void saveAll() {
+
+        for (Map.Entry entry : users.entrySet()) {
+            SMPBot.getMongoManager().getUserDAO().save((User) entry.getValue());
+        }
+
     }
 }

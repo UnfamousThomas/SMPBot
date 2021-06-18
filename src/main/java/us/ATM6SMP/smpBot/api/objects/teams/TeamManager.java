@@ -395,4 +395,13 @@ public class TeamManager {
 
         return null;
     }
+
+    public void saveAll() {
+        for (Map.Entry entry : invitesMap.entrySet()) {
+            SMPBot.getMongoManager().getInviteDAO().save((InviteObject) entry.getValue());
+        }
+        for (Map.Entry entry : teamsMap.entrySet()) {
+            SMPBot.getMongoManager().getTeamDAO().save((TeamObject) entry.getValue());
+        }
+    }
 }

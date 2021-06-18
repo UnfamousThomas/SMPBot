@@ -5,7 +5,6 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import us.ATM6SMP.smpBot.api.commands.Category;
 import us.ATM6SMP.smpBot.api.commands.Command;
 import us.ATM6SMP.smpBot.api.commands.CustomPermission;
-import us.ATM6SMP.smpBot.api.leaderboard.LocalLeaderboard;
 
 import java.util.List;
 

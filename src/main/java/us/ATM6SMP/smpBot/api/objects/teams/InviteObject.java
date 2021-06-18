@@ -8,14 +8,14 @@ import org.mongodb.morphia.annotations.Indexed;
 @Entity(value="invites", noClassnameStored = true)
 public class InviteObject {
     @Id
-    ObjectId id;
+    private ObjectId id;
 
     @Indexed
     boolean active;
-    Long memberSentTo;
-    Long memberSentFrom;
-    Long timeInvitedAt;
-    Long guildId;
+    private Long memberSentTo;
+    private Long memberSentFrom;
+    private Long timeInvitedAt;
+    private Long guildId;
 
 
     public void setActive(boolean active) {

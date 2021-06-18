@@ -10,7 +10,6 @@ import us.ATM6SMP.smpBot.api.database.daos.InviteDAO;
 import us.ATM6SMP.smpBot.api.database.daos.TeamDAO;
 import us.ATM6SMP.smpBot.api.database.daos.UserDAO;
 import us.ATM6SMP.smpBot.api.objects.settings.GuildSettings;
-import us.ATM6SMP.smpBot.api.objects.settings.GuildSettingsManager;
 import us.ATM6SMP.smpBot.api.objects.teams.InviteObject;
 import us.ATM6SMP.smpBot.api.objects.teams.TeamObject;
 import us.ATM6SMP.smpBot.api.objects.user.User;
