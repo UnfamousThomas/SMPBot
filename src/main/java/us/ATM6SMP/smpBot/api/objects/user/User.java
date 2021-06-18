@@ -24,7 +24,7 @@ public class User implements Comparable<User> {
     private long discordId;
 
     private String currentDiscordName;
-    private ArrayList<String> previousDiscordNames;
+    private ArrayList<String> previousDiscordNames = new ArrayList<>();
     private double totalExperience;
     private double experience;
     private int level = 0;
