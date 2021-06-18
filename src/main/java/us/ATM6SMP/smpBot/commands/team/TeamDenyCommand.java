@@ -33,7 +33,7 @@ public class TeamDenyCommand extends Command {
     private void deny(Member m, MessageReceivedEvent e, Long id) {
         TeamManager manager = TeamManager.getInstance();
         final InviteObject[] inviteObject = {null};
-        manager.getInvites().forEach(invite -> {
+        manager.getInvites(m.getGuild()).forEach(invite -> {
             if(invite.getMemberSentTo() == m.getIdLong() && invite.getMemberSentFrom().equals(id)) {
                 inviteObject[0] = invite;
             }
@@ -45,7 +45,7 @@ public class TeamDenyCommand extends Command {
         }
 
         final TeamObject[] object = {null};
-        manager.getTeams().forEach(teamObject -> {
+        manager.getTeams(m.getGuild()).forEach(teamObject -> {
             if (teamObject.getLeaderId().equals(id)) {
                 object[0] = teamObject;
             }

@@ -18,9 +18,9 @@ public class TeamManager {
     public static TeamManager instance;
     MongoManager mongoManager = SMPBot.getMongoManager();
     //ArrayList<TeamObject> teams = new ArrayList<>();
-    ArrayList<InviteObject> invites = new ArrayList<>();
+    //ArrayList<InviteObject> invites = new ArrayList<>();
     Map<Long, ArrayList<TeamObject>> teamsMap = new HashMap<>();
-
+    Map<Long, ArrayList<InviteObject>> invitesMap = new HashMap<>();
     public static TeamManager getInstance() {
         if (instance == null) {
             instance = new TeamManager();
@@ -44,7 +44,20 @@ public class TeamManager {
             }
         }
         List<InviteObject> invitesLoaded = SMPBot.getMongoManager().getInviteDAO().find().asList();
-        invites.addAll(invitesLoaded);
+
+        for (InviteObject inviteObject : invitesLoaded) {
+            if(invitesMap.containsKey(inviteObject.getGuildId())) {
+                ArrayList<InviteObject> inviteListForGuild = invitesMap.get(inviteObject.getGuildId());
+                inviteListForGuild.add(inviteObject);
+
+                invitesMap.put(inviteObject.getGuildId(), inviteListForGuild);
+            } else {
+                ArrayList<InviteObject> inviteListForGuild = new ArrayList<>();
+                inviteListForGuild.add(inviteObject);
+
+                invitesMap.put(inviteObject.getGuildId(), inviteListForGuild);
+            }
+        }
     }
 
     public void createTeam(Member member, Color color, String name, Guild guild) {
@@ -134,7 +147,7 @@ public class TeamManager {
         newInvite.setMemberSentFrom(team.getLeaderId());
 
         mongoManager.getInviteDAO().save(newInvite);
-        invites.add(newInvite);
+        addInvite(newInvite, member.getGuild());
 
         removeTeam(team, member.getGuild());
         team.addInvite(newInvite);
@@ -168,9 +181,9 @@ public class TeamManager {
     public void joinTeam(Member joining, TeamObject joinedTeam, InviteObject inviteObject) {
         joining.getGuild().getTextChannelById(joinedTeam.getTeamChatChannelId()).sendMessage(joining.getEffectiveName() + " has joined the team!").queue();
 
-        invites.remove(inviteObject);
+        removeInvite(inviteObject, joining.getGuild());
         inviteObject.setActive(false);
-        invites.add(inviteObject);
+        addInvite(inviteObject, joining.getGuild());
         mongoManager.getInviteDAO().save(inviteObject);
 
         removeTeam(joinedTeam, joining.getGuild());
@@ -256,9 +269,9 @@ public class TeamManager {
     public void denyInvite(Member invited, TeamObject team, InviteObject invite) {
         invited.getGuild().getTextChannelById(team.getTeamChatChannelId()).sendMessage(invited.getEffectiveName() + " has denied the invite to the team!").queue();
 
-        invites.remove(invite);
+        removeInvite(invite, invited.getGuild());
         invite.setActive(false);
-        invites.add(invite);
+        addInvite(invite, invited.getGuild());
         mongoManager.getInviteDAO().save(invite);
     }
 
@@ -266,8 +279,8 @@ public class TeamManager {
         return teamsMap.get(guild);
     }
 
-    public ArrayList<InviteObject> getInvites() {
-        return invites;
+    public ArrayList<InviteObject> getInvites(Guild guild) {
+        return invitesMap.get(guild);
     }
 
     private void removeTeam(TeamObject team, Guild guild) {
@@ -284,6 +297,22 @@ public class TeamManager {
         teams.add(team);
 
         teamsMap.put(guild.getIdLong(), teams);
+    }
+
+    private void removeInvite(InviteObject invite, Guild guild) {
+        ArrayList<InviteObject> invites = invitesMap.get(guild.getIdLong());
+
+        invites.remove(invite);
+
+        invitesMap.put(guild.getIdLong(), invites);
+    }
+
+    private void addInvite(InviteObject invite, Guild guild) {
+        ArrayList<InviteObject> invites = invitesMap.get(guild.getIdLong());
+
+        invites.add(invite);
+
+        invitesMap.put(guild.getIdLong(), invites);
     }
 
     public TeamObject getTeamMemberOf(Member searching) {

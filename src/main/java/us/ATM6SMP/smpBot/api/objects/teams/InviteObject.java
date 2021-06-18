@@ -15,6 +15,7 @@ public class InviteObject {
     Long memberSentTo;
     Long memberSentFrom;
     Long timeInvitedAt;
+    Long guildId;
 
 
     public void setActive(boolean active) {
@@ -47,5 +48,13 @@ public class InviteObject {
 
     public boolean isActive() {
         return active;
+    }
+
+    public Long getGuildId() {
+        return guildId;
+    }
+
+    public void setGuildId(Long guildId) {
+        this.guildId = guildId;
     }
 }
