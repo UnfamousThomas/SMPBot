@@ -6,7 +6,7 @@ public enum Text {
     YOUR_TEAM_NOTFOUND("Your team could not be found. Please join a team first!"),
     YOUR_TEAM_LEADER_NOTFOUND("You are not the leader of your team."),
     ALREADY_IN_TEAM("You are already in a team. Please leave your current team first."),
-    TEAM_CREATED("The team: %name has been created."),,
+    TEAM_CREATED("The team: %name has been created."),
     TEAM_DELETED("Team %name has been deleted."),
     INVITE_NOT_ACTIVE("That invite is not active."),
     INVITE_NOT_FOUND("Invite could not be found."),
