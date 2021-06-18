@@ -397,11 +397,19 @@ public class TeamManager {
     }
 
     public void saveAll() {
-        for (Map.Entry entry : invitesMap.entrySet()) {
-            SMPBot.getMongoManager().getInviteDAO().save((InviteObject) entry.getValue());
+
+        for(Map.Entry entry : invitesMap.entrySet()) {
+            for (Object o : ((ArrayList) entry.getValue())) {
+                InviteObject invite = (InviteObject) o;
+                SMPBot.getMongoManager().getInviteDAO().save(invite);
+            }
         }
-        for (Map.Entry entry : teamsMap.entrySet()) {
-            SMPBot.getMongoManager().getTeamDAO().save((TeamObject) entry.getValue());
+
+        for(Map.Entry entry : teamsMap.entrySet()) {
+            for (Object o : ((ArrayList) entry.getValue())) {
+                TeamObject team = (TeamObject) o;
+                SMPBot.getMongoManager().getTeamDAO().save(team);
+            }
         }
     }
 }
