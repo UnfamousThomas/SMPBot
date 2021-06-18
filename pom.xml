@@ -15,7 +15,7 @@
     </properties>
 
     <build>
-    <finalName>SMPBot</finalName>
+    <finalName>ApexNerve</finalName>
     <plugins>
         <plugin>
             <groupId>org.apache.maven.plugins</groupId>
@@ -28,7 +28,7 @@
                 <archive>
                     <manifest>
                         <mainClass>
-                            us.unfamousthomas.bot.MainClass
+                            us.unfamousthomas.apexnerve.MainClass
                         </mainClass>
                     </manifest>
                 </archive>

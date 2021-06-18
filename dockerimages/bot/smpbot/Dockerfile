@@ -7,7 +7,7 @@ ENV JAVA_MIN_HEAP=512M
 ENV JAVA_MAX_HEAP=512M
 
 # Copy jar files
-COPY target/SMPBot-jar-with-dependencies.jar /runtime/Bot.jar
+COPY target/ApexNerveBot-jar-with-dependencies.jar /runtime/Bot.jar
 
 # Change working directory so that bots's files are created there
 WORKDIR /runtime/
