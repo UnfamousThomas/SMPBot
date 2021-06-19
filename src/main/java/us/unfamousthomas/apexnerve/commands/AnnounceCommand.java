@@ -29,7 +29,7 @@ public class AnnounceCommand extends Command {
     private EmbedBuilder buildEmbed(String message, Member author) {
         EmbedBuilder embedBuilder = new EmbedBuilder();
         embedBuilder.setTitle("Announcement");
-        embedBuilder.addBlankField(false);
+        embedBuilder.addBlankField(true);
         embedBuilder.addField("", message, false);
         embedBuilder.setThumbnail(author.getUser().getEffectiveAvatarUrl());
 
