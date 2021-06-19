@@ -1,5 +1,6 @@
 package us.unfamousthomas.apexnerve;
 
+import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
@@ -28,6 +29,7 @@ public class ApexNerveBot {
     private static ApexNerveBot instance;
 
     private JDA jda;
+    private EventWaiter waiter;
 
     public ApexNerveBot(String key) {
         instance = this;
@@ -41,7 +43,7 @@ public class ApexNerveBot {
                     .setBulkDeleteSplittingEnabled(false)
                     .setChunkingFilter(ChunkingFilter.ALL) // enable member chunking for all guilds
                     .enableIntents(GatewayIntent.GUILD_MEMBERS);
-
+            waiter = new EventWaiter();
             CommandManager.init(builder);
             CommandManager.registerCommands(
                     new TestCommand(),
@@ -49,7 +51,6 @@ public class ApexNerveBot {
                     new HelpCommand(),
                     new ShutdownCommand(),
                     new InfoCommand(),
-                   // new AnnounceCommand(),
                     new LeaderboardCommand(),
                     new ManualSaveCommand(),
                     new SettingsCommand()
@@ -61,7 +62,7 @@ public class ApexNerveBot {
             jda.addEventListener(new UserManager());
             jda.addEventListener(new TextChannelListener());
             jda.addEventListener(new MemberLeaveJoinListener());
-
+            jda.addEventListener(waiter);
             loadManagers();
 
             DataHandler.getInstance().addDevs();
@@ -75,6 +76,10 @@ public class ApexNerveBot {
     private void loadManagers() {
         TeamManager.getInstance().load();
         GuildSettingsManager.getInstance().load();
+    }
+
+    public static EventWaiter getEventWaiter() {
+        return ApexNerveBot.getInstance().waiter;
     }
 
     public static JDA getJDA() {
