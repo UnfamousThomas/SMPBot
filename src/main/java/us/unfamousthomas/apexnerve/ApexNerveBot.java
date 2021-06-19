@@ -12,15 +12,15 @@ import us.unfamousthomas.apexnerve.api.database.MongoManager;
 import us.unfamousthomas.apexnerve.api.objects.settings.GuildSettingsManager;
 import us.unfamousthomas.apexnerve.api.objects.teams.TeamManager;
 import us.unfamousthomas.apexnerve.api.objects.user.UserManager;
-import us.unfamousthomas.apexnerve.commands.AnnounceCommand;
 import us.unfamousthomas.apexnerve.commands.HelpCommand;
 import us.unfamousthomas.apexnerve.commands.InfoCommand;
 import us.unfamousthomas.apexnerve.commands.dev.ManualSaveCommand;
 import us.unfamousthomas.apexnerve.commands.dev.ShutdownCommand;
 import us.unfamousthomas.apexnerve.commands.leaderboards.LeaderboardCommand;
+import us.unfamousthomas.apexnerve.commands.settings.SettingsCommand;
 import us.unfamousthomas.apexnerve.commands.team.TeamCommand;
 import us.unfamousthomas.apexnerve.commands.test.TestCommand;
-import us.unfamousthomas.apexnerve.listeners.GuildLeaveJoinListener;
+import us.unfamousthomas.apexnerve.listeners.MemberLeaveJoinListener;
 import us.unfamousthomas.apexnerve.listeners.TextChannelListener;
 import us.unfamousthomas.apexnerve.listeners.VoiceChannelListener;
 
@@ -49,9 +49,10 @@ public class ApexNerveBot {
                     new HelpCommand(),
                     new ShutdownCommand(),
                     new InfoCommand(),
-                    new AnnounceCommand(),
+                   // new AnnounceCommand(),
                     new LeaderboardCommand(),
-                    new ManualSaveCommand()
+                    new ManualSaveCommand(),
+                    new SettingsCommand()
             );
 
             jda = builder.build();
@@ -59,7 +60,7 @@ public class ApexNerveBot {
             jda.addEventListener(new VoiceChannelListener());
             jda.addEventListener(new UserManager());
             jda.addEventListener(new TextChannelListener());
-            jda.addEventListener(new GuildLeaveJoinListener());
+            jda.addEventListener(new MemberLeaveJoinListener());
 
             loadManagers();
 
@@ -67,7 +68,8 @@ public class ApexNerveBot {
             Logger.log(Logger.Level.SUCCESS, "Bot started.");
         } catch (Exception e) {
             Logger.log(Logger.Level.ERROR, "Error starting. Stopping");
-            System.exit(-1);        }
+            System.exit(-1);
+        }
     }
 
     private void loadManagers() {

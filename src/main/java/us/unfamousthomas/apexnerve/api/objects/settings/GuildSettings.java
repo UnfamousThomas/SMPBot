@@ -18,6 +18,8 @@ public class GuildSettings {
     private String prefix = "!";
     private int maxTeam = 3;
 
+    private long systemTextChannel;
+
     public String getPrefix() {
         return prefix;
     }
@@ -42,5 +44,13 @@ public class GuildSettings {
 
     public Long getGuildId() {
         return guildId;
+    }
+
+    public void setSystemTextChannel(long systemTextChannel) {
+        this.systemTextChannel = systemTextChannel;
+    }
+
+    public long getSystemTextChannel() {
+        return systemTextChannel;
     }
 }

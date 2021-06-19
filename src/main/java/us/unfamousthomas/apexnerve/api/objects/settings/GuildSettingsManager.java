@@ -1,10 +1,13 @@
 package us.unfamousthomas.apexnerve.api.objects.settings;
 
 import us.unfamousthomas.apexnerve.api.database.MongoManager;
+import us.unfamousthomas.apexnerve.api.tasks.SaveGuildSettingsTimer;
+import us.unfamousthomas.apexnerve.api.tasks.SaveUsersTaskTimer;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
 
 public class GuildSettingsManager {
     private static GuildSettingsManager instance;
@@ -21,6 +24,12 @@ public class GuildSettingsManager {
         for (GuildSettings guildSettings : list) {
             guildSettingsMap.put(guildSettings.getGuildId(), guildSettings);
         }
+    }
+
+    private void scheduleTasks() {
+        Timer userTask = new Timer();
+        SaveGuildSettingsTimer taskTimer = new SaveGuildSettingsTimer(userTask);
+        userTask.scheduleAtFixedRate(taskTimer, 100, 1000 * 60 * 25);
     }
 
     public GuildSettings getGuildSettings(Long id) {

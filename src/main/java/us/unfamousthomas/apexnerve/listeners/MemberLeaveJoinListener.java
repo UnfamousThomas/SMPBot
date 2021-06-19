@@ -1,11 +1,14 @@
 package us.unfamousthomas.apexnerve.listeners;
 
+import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberRemoveEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import us.unfamousthomas.apexnerve.api.objects.settings.GuildSettingsManager;
 import us.unfamousthomas.apexnerve.api.objects.teams.TeamManager;
 import us.unfamousthomas.apexnerve.api.objects.teams.TeamObject;
 
-public class GuildLeaveJoinListener extends ListenerAdapter {
+public class MemberLeaveJoinListener extends ListenerAdapter {
 
     @Override
     public void onGuildMemberRemove(GuildMemberRemoveEvent event) {
@@ -25,7 +28,26 @@ public class GuildLeaveJoinListener extends ListenerAdapter {
             event.getMember().getGuild().getTextChannelById(team.getTeamChatChannelId()).sendMessage(event.getMember().getUser().getName() + " has left the discord and has thus been removed from the members list.").queue();
         }
 
+        long textChannel = GuildSettingsManager.getInstance().getGuildSettings(event.getGuild().getIdLong()).getSystemTextChannel();
+
+        TextChannel realText = event.getGuild().getTextChannelById(textChannel);
+
+        if(realText == null) return;
+        realText.sendMessage(event.getUser().getName() + " has left the discord server.").queue();
+
     }
+
+    @Override
+    public void onGuildMemberJoin(GuildMemberJoinEvent event) {
+        long textChannel = GuildSettingsManager.getInstance().getGuildSettings(event.getGuild().getIdLong()).getSystemTextChannel();
+
+        TextChannel realText = event.getGuild().getTextChannelById(textChannel);
+
+        if(realText == null) return;
+        realText.sendMessage(event.getUser().getName() + " has joined the discord server.").queue();
+
+    }
+
 
 
 }

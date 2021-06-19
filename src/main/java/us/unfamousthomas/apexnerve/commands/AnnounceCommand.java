@@ -17,8 +17,10 @@ public class AnnounceCommand extends Command {
         aliases = alias("announcement", "news");
         permission = CustomPermission.ADMIN;
         usage = "!announce (message)";
+        maxArgs = 1;
     }
 
+    //todo redo announce cmd to enable sending longer messages
     @Override
     public void run(Member m, List<String> args, MessageReceivedEvent event) {
         event.getMessage().delete().queue();
