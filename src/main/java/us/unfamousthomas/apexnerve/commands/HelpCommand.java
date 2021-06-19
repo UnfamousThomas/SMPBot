@@ -9,6 +9,7 @@ import us.unfamousthomas.apexnerve.api.commands.Command;
 import us.unfamousthomas.apexnerve.api.commands.CommandManager;
 import us.unfamousthomas.apexnerve.api.commands.CustomPermission;
 
+import java.time.Year;
 import java.util.List;
 
 public class HelpCommand extends Command {
@@ -26,7 +27,7 @@ public class HelpCommand extends Command {
         if(args.size() == 0) {
             EmbedBuilder embed = new EmbedBuilder();
             embed.setTitle("Command help");
-            embed.setFooter(Text.BOT_FOOTER.getMessage());
+            embed.setFooter(Text.BOT_FOOTER.getReplaced("%year", String.valueOf(Year.now().getValue())));
 
             StringBuilder builder = new StringBuilder();
             CommandManager.getInstance().getCommands().forEach((s, command) -> {

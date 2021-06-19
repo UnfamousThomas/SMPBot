@@ -12,6 +12,8 @@ import us.unfamousthomas.apexnerve.api.commands.CustomPermission;
 import us.unfamousthomas.apexnerve.api.objects.user.UserManager;
 
 import java.awt.*;
+import java.time.Year;
+import java.util.Date;
 import java.util.List;
 
 public class InfoCommand extends Command {
@@ -49,7 +51,7 @@ public class InfoCommand extends Command {
         us.unfamousthomas.apexnerve.api.objects.user.User userObject = UserManager.getInstance().getUserByMember(member, user.getName());
         builder.setTitle(user.getName() + " - PROFILE");
         builder.setColor(Color.WHITE);
-        builder.setFooter(Text.BOT_FOOTER.getMessage());
+        builder.setFooter(Text.BOT_FOOTER.getReplaced("%year", String.valueOf(Year.now().getValue())));
         if(userObject.checkInTeam(member.getGuild())) {
             builder.addField("Team", userObject.getTeamName(member.getGuild()), false);
         }

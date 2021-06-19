@@ -12,6 +12,7 @@ import us.unfamousthomas.apexnerve.api.commands.CustomPermission;
 import us.unfamousthomas.apexnerve.api.objects.teams.TeamManager;
 import us.unfamousthomas.apexnerve.api.objects.teams.TeamObject;
 
+import java.time.Year;
 import java.util.List;
 
 public class TeamCommand extends Command {
@@ -54,7 +55,7 @@ public class TeamCommand extends Command {
         embedBuilder
                 .setColor(team.getColor())
                 .setTitle("Team Info")
-                .setFooter(Text.BOT_FOOTER.getMessage())
+                .setFooter(Text.BOT_FOOTER.getReplaced("%year", String.valueOf(Year.now().getValue())))
                 .addField("Team name", team.getName(), true);
 
         StringBuilder builder = new StringBuilder();
