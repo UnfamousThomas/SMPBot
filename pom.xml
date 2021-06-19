@@ -15,7 +15,7 @@
     </properties>
 
     <build>
-    <finalName>ApexNerve</finalName>
+    <finalName>ApexNerveBot</finalName>
     <plugins>
         <plugin>
             <groupId>org.apache.maven.plugins</groupId>
