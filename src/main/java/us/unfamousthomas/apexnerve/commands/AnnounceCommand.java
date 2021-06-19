@@ -7,6 +7,8 @@ import us.unfamousthomas.apexnerve.api.Text;
 import us.unfamousthomas.apexnerve.api.commands.Command;
 import us.unfamousthomas.apexnerve.api.commands.CustomPermission;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class AnnounceCommand extends Command {
@@ -20,18 +22,31 @@ public class AnnounceCommand extends Command {
     @Override
     public void run(Member m, List<String> args, MessageReceivedEvent event) {
         event.getMessage().delete().queue();
-        event.getTextChannel().sendMessage(buildEmbed(String.join(" ", args), m).build()).queue();
+        for (EmbedBuilder embedBuilder : buildEmbeds(String.join(" ", args), m)) {
+            event.getTextChannel().sendMessage(embedBuilder.build()).queue();
+        }
         m.getUser().openPrivateChannel().queue(pc -> {
             pc.sendMessage(Text.ANNOUNCEMENT_MADE.getReplaced("%channel", event.getTextChannel().getAsMention())).queue();
         });
     }
 
-    private EmbedBuilder buildEmbed(String message, Member author) {
+    private List<EmbedBuilder> buildEmbeds(String message, Member author) {
+        List<EmbedBuilder> builders = new ArrayList<>();
+        String[] lines = message.split("\\r?\\n");
+
         EmbedBuilder embedBuilder = new EmbedBuilder();
         embedBuilder.setTitle("Announcement");
-        embedBuilder.addField("", message, false);
         embedBuilder.setThumbnail(author.getUser().getEffectiveAvatarUrl());
 
-        return embedBuilder;
+        builders.add(embedBuilder);
+
+        for (String s : Arrays.asList(lines)) {
+            EmbedBuilder embedLoopBuilder = new EmbedBuilder();
+            embedBuilder.addField("", s, false);
+
+            builders.add(embedLoopBuilder);
+        }
+
+        return builders;
     }
 }
